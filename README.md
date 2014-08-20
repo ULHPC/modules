@@ -1,27 +1,33 @@
-` README.md `
-Copyright (c) 2014 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www](http://varrette.gforge.uni.lu)
+-*- mode: markdown; mode: auto-fill; fill-column: 100 -*-
+Time-stamp: <Mer 2014-08-20 16:27 svarrette>
 
-        Time-stamp: <>
+       _   _ _       _   _ ____   ____   __  __           _       _
+      | | | | |     | | | |  _ \ / ___| |  \/  | ___   __| |_   _| | ___  ___
+      | | | | |     | |_| | |_) | |     | |\/| |/ _ \ / _` | | | | |/ _ \/ __|
+      | |_| | |___  |  _  |  __/| |___  | |  | | (_) | (_| | |_| | |  __/\__ \
+       \___/|_____| |_| |_|_|    \____| |_|  |_|\___/ \__,_|\__,_|_|\___||___/
+
+       Copyright (c) 2014 [UL HPC Management Team](mailto:<hpc-sysadmins@uni.lu>) 
+
+[Environment Modules](http://modules.sourceforge.net/) /
+[LMod](https://www.tacc.utexas.edu/tacc-projects/lmod) /
+[Easybuild](http://hpcugent.github.io/easybuild/) configuration available on the
+[UL HPC](http://hpc.uni.lu) platform.  
+
+* [MIT Licence](Licence.md) 
+* [GitHub Homepage](https://github.com/ULHPC/modules) 
 
 -------------------
-# Environment Modules / LMod for the UL HPC Platform
 
 ## Synopsis
 
-This repository host all elements required to manage the [Environment Modules](http://modules.sourceforge.net/) available on the [UL HPC](http://hpc.uni.lu) platform. 
+This repository host all elements required to manage the
+[Modules](http://modules.sourceforge.net/) environment available on the
+[UL HPC](http://hpc.uni.lu) platform.  
 
 Mostly, our workflow relies on [Easybuild](http://hpcugent.github.io/easybuild/). 
 
-
-## Installation
-
-This repository is hosted on out [GitHub](https://github.com/ULHPC/modules).
-Once cloned, initiate your local copy of the repository by running:
-
-    $> cd modules
-    $> rake setup
-
-## Context & related tools/frameworks
+## Pre-requisites & related tools/frameworks
 
 ### Git
 
@@ -59,6 +65,46 @@ In particular, the central repository holds two main branches with an infinite l
 * `prod`:    the *production-ready* branch
 * `develop`: the main branch where the latest developments intervene. This is
   the *default* branch you get when you clone the repo
+
+### Ruby, RVM, Bundle and Rakefile
+
+The various operations that can be conducted from this repository are piloted
+from a `Rakefile` and assumes you have a running Ruby installation.
+
+The bootstrapping of your repository is based on [RVM](https://rvm.io/), **thus
+ensure this tools are installed on your system** -- see
+[installation notes](https://rvm.io/rvm/install).
+
+The ruby stuff part of this repository corresponds to the following files: 
+
+* `.ruby-{version,gemset}`: [RVM](https://rvm.io/) configuration, use the name of the
+  project as [gemset](https://rvm.io/gemsets) name
+* `Gemfile`: used by `[bundle](http://bundler.io/)`, initialized with `bundle
+init` that contain _at least_ the line `gem 'falkorlib'`
+* `Gemfile.lock` will be automatically generated once you run `bundle` to
+  install the configured gems within your `Gemfile`.
+  
+
+
+
+
+
+You should now be able to access the list of available tasks by running:
+
+	$> rake -T
+
+You probably wants to activate the bash-completion for rake tasks.
+I personnaly use the one provided [here](https://github.com/ai/rake-completion)
+
+
+
+## Installation
+
+This repository is hosted on out [GitHub](https://github.com/ULHPC/modules).
+Once cloned, initiate your local copy of the repository by running:
+
+    $> cd modules
+    $> rake setup
 
 
 

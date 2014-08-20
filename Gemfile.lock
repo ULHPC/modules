@@ -3,7 +3,7 @@ GEM
   specs:
     awesome_print (1.2.0)
     configatron (3.2.0)
-    falkorlib (0.2.13)
+    falkorlib (0.2.15)
       awesome_print (~> 1.2)
       configatron (~> 3.2)
       git_remote_branch (~> 0)

@@ -1,6 +1,6 @@
 ##############################################################################
 # Rakefile - Configuration file for rake (http://rake.rubyforge.org/)
-# Time-stamp: <Mer 2014-08-20 15:05 svarrette>
+# Time-stamp: <Mer 2014-08-20 17:29 svarrette>
 #
 # Copyright (c) 2014 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 # .             http://varrette.gforge.uni.lu
@@ -40,6 +40,14 @@ FalkorLib.config.gitflow do |c|
     }
 end
 
+# Configure the git submodules
+FalkorLib.config.git do |c|
+    c[:submodules] = {
+        'Makefiles' => {
+            :url    => 'https://github.com/Falkor/Makefiles'
+        }
+    }
+end
 
 
 
