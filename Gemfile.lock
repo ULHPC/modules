@@ -1,0 +1,24 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    awesome_print (1.2.0)
+    configatron (3.2.0)
+    falkorlib (0.2.13)
+      awesome_print (~> 1.2)
+      configatron (~> 3.2)
+      git_remote_branch (~> 0)
+      minigit (~> 0)
+      rake (~> 10.1, >= 10.1.0)
+      term-ansicolor (~> 1.3)
+    git_remote_branch (0.3.8)
+    minigit (0.0.4)
+    rake (10.3.2)
+    term-ansicolor (1.3.0)
+      tins (~> 1.0)
+    tins (1.3.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  falkorlib
