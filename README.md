@@ -1,5 +1,5 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 100 -*-
-Time-stamp: <Mer 2014-08-20 16:27 svarrette>
+Time-stamp: <Mer 2014-08-20 21:28 svarrette>
 
        _   _ _       _   _ ____   ____   __  __           _       _
       | | | | |     | | | |  _ \ / ___| |  \/  | ___   __| |_   _| | ___  ___
@@ -7,7 +7,7 @@ Time-stamp: <Mer 2014-08-20 16:27 svarrette>
       | |_| | |___  |  _  |  __/| |___  | |  | | (_) | (_| | |_| | |  __/\__ \
        \___/|_____| |_| |_|_|    \____| |_|  |_|\___/ \__,_|\__,_|_|\___||___/
 
-       Copyright (c) 2014 [UL HPC Management Team](mailto:<hpc-sysadmins@uni.lu>) 
+> Copyright (c) 2014 [UL HPC Management Team](mailto:<hpc-sysadmins@uni.lu>) 
 
 [Environment Modules](http://modules.sourceforge.net/) /
 [LMod](https://www.tacc.utexas.edu/tacc-projects/lmod) /
@@ -79,10 +79,7 @@ The ruby stuff part of this repository corresponds to the following files:
 
 * `.ruby-{version,gemset}`: [RVM](https://rvm.io/) configuration, use the name of the
   project as [gemset](https://rvm.io/gemsets) name
-* `Gemfile`: used by `[bundle](http://bundler.io/)`, initialized with `bundle
-init` that contain _at least_ the line `gem 'falkorlib'`
-* `Gemfile.lock` will be automatically generated once you run `bundle` to
-  install the configured gems within your `Gemfile`.
+* `Gemfile[.lock]`: used by `[bundle](http://bundler.io/)`
   
 
 
