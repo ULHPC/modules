@@ -4,19 +4,24 @@ Copyright (c) 2014 [Sebastien Varrette](mailto:<Sebastien.Varrette@uni.lu>) [www
         Time-stamp: <>
 
 -------------------
-# modules
+# Environment Modules / LMod for the UL HPC Platform
 
 ## Synopsis
 
-## Local repository setup
+This repository host all elements required to manage the [Environment Modules](http://modules.sourceforge.net/) available on the [UL HPC](http://hpc.uni.lu) platform. 
 
-This repository is hosted on out [GitHub]().
-Once cloned, initiate the potential git submodules etc. by running:
+Mostly, our workflow relies on [Easybuild](http://hpcugent.github.io/easybuild/). 
+
+
+## Installation
+
+This repository is hosted on out [GitHub](https://github.com/ULHPC/modules).
+Once cloned, initiate your local copy of the repository by running:
 
     $> cd modules
-    $> make setup
+    $> rake setup
 
-## Pre-requisites
+## Context & related tools/frameworks
 
 ### Git
 
@@ -44,22 +49,26 @@ You can also use the following commands:
     $> git config --global color.diff auto
     $> git config --global color.status auto
     $> git config --global color.branch auto
-
+    
 ### git-flow
 
 The Git branching model for this repository follows the guidelines of
 [gitflow](http://nvie.com/posts/a-successful-git-branching-model/).
 In particular, the central repository holds two main branches with an infinite lifetime:
 
-* `  prod`: the *production-ready* branch
-* `develop`: the main branch where the latest developments interviene. This is
+* `prod`:    the *production-ready* branch
+* `develop`: the main branch where the latest developments intervene. This is
   the *default* branch you get when you clone the repo
+
+
+
+----  
 
 # Advanced information
 
 ## Releasing mechanism
 
-The operation consisting of releasing a new version of this repository is automated by a set of tasks within the `Makefile`.
+The operation consisting of releasing a new version of this repository is automated by a set of tasks within the `Rakefile`.
 
 In this context, a version number have the following format:
 
@@ -78,17 +87,17 @@ The current version number is stored in the file `VERSION`. __/!\ NEVER MAKE ANY
 
 For more information on the version, run:
 
-     $> make versioninfo
+     $> rake version:info
 
 If a new  version number such be bumped, you simply have to run:
 
-      $> make start_bump_{major,minor,patch}
+      $> rake version:bump:{major,minor,patch}
 
 This will start the release process for you using `git-flow`.
 Probably after that, the first things to do is to change within the main LaTeX document the version number and commit this change.
 Then, to make the release effective, just run:
 
-      $> make release
+      $> rake version:release
 
-it will finish the release using `git-flow`, create the appropriate tag in the `  prod` branch and merge all things the way they should be.
+it will finish the release using `git-flow`, create the appropriate tag in the `prod` branch and merge all things the way they should be.
 
