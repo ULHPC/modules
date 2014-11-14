@@ -7,7 +7,7 @@ require 'falkorlib'
 FalkorLib.config.gitflow do |c|
     c[:branches] = {
         :master  => 'production',
-        :develop => 'develop'
+        :develop => 'devel'
     }
 end
 
