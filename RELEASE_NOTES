@@ -1,0 +1,363 @@
+This file contains a description of the major changes to the easybuild-framework EasyBuild package.
+For more detailed information, please see the git log.
+
+v1.9.0 (November 17th 2013)
+---------------------------
+
+feature + bugfix release
+- add support for Tcl environment modules (modulecmd.tcl) (#728, #729, #739)
+    - special care was taken to make sure also the DEISA variant of modulecmd.tcl can be used
+- code refactoring to prepare for supporting two formats for easyconfig files (#693, #750)
+    - this prepares the codebase for supporting easyconfig format v2.0
+    - some initial work on adding support for the new easyconfig format is included, but it's by no means complete yet
+    - the current easyconfig format (now dubbed v1.0) is still the default and only supported format, for now
+    - for more details, see https://github.com/hpcugent/easybuild/wiki/Easyconfig-format-two
+- various other enhancements, including:
+    - include a full version of vsc-base (see the 'vsc' subdirectory) (#740)
+        - this is a first step towards switching to using vsc-base as a proper dependency
+    - implement get_avail_core_count function in systemtools module that takes cpusets and co into account (#700)
+        - the get_core_count function is now deprecated
+    - add impmkl toolchain definition (#736)
+    - make regtest more robust: put holds on jobs without dependencies, release holds once all jobs are submitted (#751)
+    - add support for specifying multiple alternatives for sanity check paths (#753)
+    - add get_software_libdir function to modules.py (along with unit tests) (#758)
+    - add support for more file extensions and constants w.r.t. sources (#738, #760, #761)
+    - add MPICH2 support in mpi_cmd_for function (#761)
+- various bug fixes, including:
+    - fix checking of OS dependencies on Debian/Ubuntu that have 'rpm' command available (#732)
+    - make unit tests more robust w.r.t. non-writeabe /tmp and loaded modules prior to starting unit tests (#752, #756)
+    - also call EasyBlock's sanity check in ExtensionEasyblock if paths/commands are specified in easyconfig (#757)
+    - set compiler family for dummy compiler, add definition of toolchain constant for dummy (#759)
+- other
+    - add build status badges for master/develop branches to README (#742)
+    - add scripts for installing EasyBuild develop version or setting up git development environment (#730, #755)
+
+v1.8.2 (October 18th 2013)
+--------------------------
+
+bugfix release
+- fix regular expression used for obtaining list of modules from 'module avail' (#724)
+    - modules marked as default were being hidden from EasyBuild, causing problems when they are used as dependency
+
+v1.8.1 (October 14th 2013)
+--------------------------
+
+bugfix release
+- various bug fixes, including:
+    - fix bugs in regtest procedure (#713)
+        - force 2nd and 3rd attempt of build in case 1st attempt failed
+    - fix copying of install log to install directory (#716)
+    - only create first source path if multiple paths are specified (#718)
+    - detect failed PBS job submission by checking obtained job ID for None value (#713, #717, #719, #720)
+
+v1.8.0 (October 4th 2013)
+-------------------------
+
+feature + bugfix release
+- add support for using alternative module naming schemes (#679, #696, #705, #706, #707)
+    - see https://github.com/hpcugent/easybuild/wiki/Using-a-custom-module-naming-scheme for documentation
+    - module naming scheme classes that derive from the 'abstract' ModuleNamingScheme class can be provided to EasyBuild
+        - the Python module providing the class must be available in the easybuild.tools.module_naming_scheme namespace
+        - a function named 'det_full_module_name' must be implemented, that determines the module name
+          in the form of an string based on the supplied dictionary(-like) argument
+    - the active module naming scheme is determined by EasyBuild configuration option 'module_naming_scheme'
+    - for now, only the name/version/versionsuffix/toolchain easyconfig parameters are guaranteed to be provided
+        - consistently providing all easyconfig parameters (i.e., also for dependencies) requires more work (see #687)
+    - implementing this involved a number of intrusive changes:
+        - the API of the modules.py module needed to be changed, breaking backward compatibility
+            - the function for which the signatures were modified are considered to be internal to the framework,
+              so this should have very minor impact w.r.t. easyblocks not included with EasyBuild
+            - affected functions include: available, exists, show, modulefile_path, dependencies_for
+        - the format for specifying dependencies was extended, to allow for specifying a custom toolchain
+            - this allows to fix inaccurate dependency specifications,
+              like "('OpenMPI', '1.6.4-GCC-4.7.2')" to "('OpenMPI', '1.6.4', '', ('GCC', '4.7.2'))"
+            - see also https://github.com/hpcugent/easybuild-easyconfigs/pull/431
+        - the recommended version for Lmod was bumped to v5.1.5
+            - using earlier 5.x version still works, but may be very slow when 'available' is used,
+              due to bugs and a missing feature in Lmod versions prior to v5.1.5 on which we rely
+- various other enhancements, including:
+    - only (try to) change group id if it is different from what is wanted (#685)
+    - added toy build unit test (#688)
+    - support for specifying a list of source paths in EasyBuild configuration (#690, #702)
+    - add function to determine CPU clock speed in systemtools.py (#694, #699)
+- various bug fixes, including:
+    - avoid importing toolchain modules over and over again to make toolchain constants available in toolchain module (#679)
+    - only change the group id if current gid is different from what we want in adjust_permissions function (#685)
+    - restore original environment after running 'module purge' (#698)
+        - important sidenote: this results in resetting the entire environment, and has impact on the sanity check step;
+          any environment variables that are set before the EasyBlock.sanity_check_step method fires, are no longer there
+          when the sanity check commands are run (cfr. https://github.com/hpcugent/easybuild-easyblocks/pull/268)
+
+v1.7.0 (September 2nd 2013)
+---------------------------
+
+feature + bugfix release
+- various enhancements, including:
+    - also search for patch files in directory where easyconfig file is located (#667)
+    - reduce false positives in reporting of possible errors messages (#669)
+    - make module update $ACLOCAL if a share/aclocal subdir is found (#670)
+    - add 'unwanted_env_vars' easyconfig parameter to list environment variables to unset during install procedure (#673)
+    - add support for updating list easyconfig values (next to string values) (#676)
+    - add --dry-run command line option which prints installation overview for specified easyconfig files (#677)
+- various bug fixes, including:
+    - ensure that all extensions are listed in $EBEXTSLISTX set by module, also when using --skip (#671)
+    - report reason for failed sanity check for extensions (#672, #678)
+    - fix --list-toolchains command line option (#675)
+
+v1.6.0 (July 11th 2013)
+-----------------------
+
+feature + bugfix release
+- added support for using Lmod as module tool (refs #645)
+- various other enhancements, including:
+    - allow prepending to/appending to/overwriting list easyconfig parameters using --try-amend-X (refs #658, #664)
+- various bug fixes, including:
+    - add salt to temporary log file name (refs #656, #665)
+    - fix determining CPU architecture on Rasberry Pi (ARM) systems (refs #655, #662)
+    - fix support for determining base path of tarballs containing a single file (refs #660)
+
+v1.5.0 (June 1st 2013)
+----------------------
+
+feature + bugfix release
+- various enhancements, including:
+    - define SHLIB_EXT constant for shared library extension (.so, .dylib), deprecate shared_lib_ext global var (#630)
+    - enhance support for sanity checking extensions (#632, #649)
+    - add support for modextrapaths easyconfig parameter (#634, #637)
+    - allow source_urls to be templated for extensions (#639, #646, #647)
+    - set OMPI_* environment variables for OpenMPI (#640)
+    - make BLACS optional as toolchain element, depending on ScaLAPACK version (#638)
+- various bug fixes, including:
+    - fixed --list-toolchains, avoid listing toolchains multiple times (#628)
+    - fix templating dictionary after parsing easyconfig file (#633)
+    - fix support for ACML as compiler toolchain element (#632)
+    - make unit tests clean up after themselves more thoroughly (#641, #642, #643)
+
+v1.4.0 (May 2nd 2013)
+---------------------
+
+feature + bugfix release
+- the unit tests for easybuild-framework were moved to test/framework,
+  to make things consistent with easybuild-easyblocks and easybuild-easyconfigs (#611, #613, #624)
+    - running the framework unit tests should now be using 'python -n test.framework.suite'
+- various other enhancements, including:
+    - extend unit test suite (#593, #599, #603, #618, #620, #622, #624, ...)
+    - extended list of constants and templates that can be used in easyconfig files (#566)
+    - add support for additional compiler toolchains
+        - CUDA-enabled toolchain: goolfc (#603, #624)
+        - Clang(+GCC)-based toolchains: cgoolf, cgmpolf, cgmvolf (#593, #598, #600)
+        - gmvolf (GCC+MVAPICH2+...) (#585)
+    - properly decode easyblock to module name using decode_* functions (#618)
+- various bug fixes, including:
+    - fixed default value for --stop (#601)
+    - remove useless sleep() calls in run_cmd, run_cmd_qa (#599)
+    - determine module path based on class name, not software name (#606)
+    - remove unwanted characters in build dirs (#591, #607)
+    - ignore some error codes spit out by modulecmd that are actually warnings (#609)
+    - fix agithub.py w.r.t. changes in GitHub API (user-agent string is now obligatory for non-authenticated connections) (#617)
+    - fix typo breaking the adjust_cmd decorator on SuSE (#615)
+    - fix prepending paths with absolute paths in module file (#621)
+    - clean up open file handles properly (#620, #624)
+    - fix --search help and implementation (#622)
+
+v1.3.0 (April 1st 2013)
+-----------------------
+
+feature + bugfix release
+- added script to bootstrap EasyBuild with EasyBuild, see https://github.com/hpcugent/easybuild/wiki/Bootstrapping-EasyBuild (#531)
+- reorganize framework/easyconfig.py module into framework/easyconfig package with modules (#574, #580)
+- support EasyBuild configuration via command line, environment variables and configuration files (#529, #552, #556, #558, #559)
+- various other enhancements, including:
+    - extended set of unit tests for eb command line options and EasyBuild configuration (#517, #556, #559, #571)
+    - made --search also useful when easybuild-easyconfigs package is not installed (#524)
+    - extended set of default module classes (#525)
+    - add support for license easyconfig parameter (which will be mandatory in v2.x) (#526, #569)
+    - added setup.cfg for setup.py to allow creating RPMs (#528)
+    - added support for obtaining system information, see get_os_* functions in easybuild/tools/systemtools.py (#543, #546, #547)
+    - added support for iterated builds that require cycling over multiple sets of configure/build/install options, e.g. FFTW (#549)
+    - added support for OpenBLAS as toolchain lib for linear algebra (#537, #565)
+    - added support for tweaking prefix and separator for library toolchain variables (LIB*) (#572, #576)
+    - skip already built modules in regression testing mode, to ease regression testing (#582)
+- various bug fixes, including:
+    - added zip_safe flag to setup.py, to silence multitude of warnings (#521)
+    - only define LIBFFT for Intel MKL if FFTW interface libraries are available (#518, #567, #579)
+    - set POSIX group early in build process, make EasyBuild aware of consistent chmod/chown failures (#527)
+    - properly order the name/version keys for the toolchain easyconfig parameter when using --try-toolchain (#563)
+    - take the 'skipsteps' easyconfig parameter into account in regression testing mode as well (#583)
+
+v1.2.0 (February 28th 2013)
+---------------------------
+
+feature + bugfix release
+- new backend module for option parsing: generaloption
+- support for using constants and string templates in easyconfig files
+    - currently disabled for 'exts_filter' and 'exts_list' easyconfog parameters, for backward compatibility
+- various other enhancements, including:
+    - support for iqacml and iiqmpi toolchains (Intel compilers + QLogic MPI based)
+    - clearer errors messages when sanity check failed
+    - unit tests for (about half of) the 'eb' command line options
+    - support for specifying build/install steps to skip in easyconfig file ('skipsteps')
+    - support for allowing certain dependencies to be resolved by the system instead of modules ('allow_system_deps')
+    - cache ppn value required by regtest, clean up temporary files let behind by --regtest/--job
+    - make sure MPD is used as process manager for Intel MPI (required for impi v4.1 and later)
+    - rename template names 'name' and 'version' used in exts_filter to 'ext_name', 'ext_version'
+        - 'name' and 'version' are still supported for legacy reasons
+    - cleaned up module docstrings w.r.t. list of authors
+- various bug fixes, including:
+    - print correct (lowercase) toolchain names with --list-toolchains
+    - correct easyconfig parameter name 'license_server_port'
+    - fix string quoting in develop modules
+    - ensure modulecmd is run with original LD_LIBRARY_PATH value
+        - to avoid breaking modulecmd, see https://bugzilla.redhat.com/show_bug.cgi?id=719785
+    - remove use of hardcoded files/dirs in unit tests
+    - fix various inconsistencies w.r.t. paths considered with --robot
+    - various cleanup and fixes w.r.t. logging
+        - use correct logger instance in main script
+        - stop passing logger instances around
+        - make module logging variables private
+    - get rid of ModuleGenerator deconstructor, clean up via EasyBlock.clean_up_fake_module
+    - fix disabling of 'optarch' toolchain option (and extend unit tests to check on this)
+
+v1.1.0 (January 27th 2013)
+--------------------------
+
+feature + bugfix release
+- improvements w.r.t. support for software extensions (tested on Python and R, see easyblocks package)
+    - cleaned up support for building/installing extensions
+    - define ExtensionEasyblock class that implements support for installing extensions as stand-alone module as well
+    - return to build dir before building/installing each extension
+    - define EBEXTSLIST<NAME> environment variable in module if exts_list was defined
+    - make sure sanity check for extensions results in an error if it fails
+- various enhancements, including:
+    - log both framework and easyblocks versions
+    - add support for gimkl, gmacml, iccifort, iomkl, and ismkl toolchains
+    - define *_SEQ compiler variables for sequential compilers
+    - add --list-toolchains command line option for listing supported toolchains
+    - add support for customizing software and modules install path suffixes
+    - support both setuptools and distutils installation methods for finding installed easyconfigs
+    - also consider robot path in list of paths searched for patch files
+    - allow skipping of default extension sanity check (by setting 'modulename' to False in options)
+- various bug fixes, including:
+    - typos in toolchain Python modules w.r.t. imkl support, handling of i8/optarch/unroll options
+    - purge before loading 'fake' module, unload 'fake' module before removing it, use original MODULEPATH
+    - restore environment after unloading fake module, set variables that were incorrectly unset, i.e., that were defined before as well
+    - unset TMPDIR for builds submitted as jobs (required by IntelBase easyblock)
+    - correctly track easyconfig parse error
+    - always run all jobs in regtest, also if dependency jobs failed
+    - cosmetic adjustments to default EasyBuild configuration file to avoid confusion between e.g. build_dir and build_path (only latter matters)
+    - fix SuSe hack, only prefix command with sourcing of /etc/profile.d/modules.sh if it is there
+    - leave build directory before it is removed during cleanup step
+    - load generated module file before running test cases
+
+v1.0.2 (December 8th 2012)
+--------------------------
+
+bugfix release
+- properly catch failing sanity check commands
+- fix bug in toolchain support which cause linking environment variables set by toolchain to include too many libraries
+    - elements in toolchain variables were being passed by reference instead of by value
+- fix selecting a compiler toolchain for a specified software package (--software-name) if only a template is a viable option
+- fix passing command line parameters with --job
+- fix list of valid stops (-s/--stop)
+- fix minor issues in help messages (-h/--help)
+
+v1.0.1 (November 24th 2012)
+---------------------------
+
+bugfix release
+- fix support for installing easybuild-framework with distutils (broken import in setup.py)
+- fix support for ACML as a toolchain element (toolchains/linalg/acml.py)
+- add name to aggregated regtest XML so that is parsed correctly by Jenkins
+- reorder code in main.py so that regtest also works with incomplete easyconfig paths
+- add bash script for running regression test and sending a trigger to Jenkins to pull in the XML with results
+- get rid of assumption that loaded modules should have name like 'foo/bar', make it more flexible
+- retry failed builds in regtest twice to ignore fluke errors
+- report leaf nodes in dependency graph when regtest is submitted
+    - this is required for setting job dependencies in the regtest script for the Jenkins trigger job
+- implement and use rmtree2 as more (NFS) robust replacement for shutil.rmtree
+- bump max hit count for run_cmd_qa from 20 to 50, to make false positives of unasnwered questions less likely
+
+v1.0 (November 13th 2012)
+-------------------------
+
+- split up EasyBuild across three repositories: framework, easyblocks and easyconfigs
+- packaged EasyBuild, different parts can now be installed easily using easy_install
+- various changes to both internal and external API:
+    - renamed main script to main.py (from build.py)
+    - file and directory organisation
+    - module, class, function and function argument renaming and reorganisation
+    - split up Application into EasyBlock and ConfigureMake (see easybuild-easyblocks for the latter)
+    - created EasyConfig class for handling easyconfig files
+    - renaming of EasyBuild configuration parameters (non-camelCase)
+    - renaming of various easyconfig parameters (non-camelCase)
+    - rename SOFTROOT and SOFTVERSION environment variables set in generated module files to EBROOT and EBVERSION
+    - use 'extension' as generic terminology for Python packages, R libraries, Perl modules, ...
+- added support for building software packages in parallel via PBS jobs
+- added unit testing framework and initial set of unit tests for basic functionality
+    - and run them in Jenkins continuous integration service, see https://jenkins1.ugent.be/view/EasyBuild/
+- implement single-command regression test (e.g. to test building all supported software)
+    - eb --regtest --robot
+- switch to new style Python classes
+- replaced toolkit module with toolchain package (total rewrite), providing modular support for toolchains
+- adjust default EasyBuild configuration to only use $HOME/.local/easybuild by default
+- added support for running EasyBuild without supplying an easyconfig file
+    - make EasyBuild search for a matching easyconfig file
+    - support automatic rewriting of an existing partially-matching easyconfig file (use this with care!)
+    - support for automatically generating an easyconfig file according to given specifications (best effort!)
+- add support for looking for easyconfig file in Python search path if it can't be found on specified (relative) path
+    (that way, easyconfig files available in the easybuild-easyconfigs package can be used easily)
+- various other enhancements and bug fixes, e.g.:
+    - extended sanity check capabilities
+    - cleaned up logging
+    - creating of devel module which allows to mimic environment that was used by EasyBuild to build the software
+    - support for creating dependency graphs for a set of easyconfig files
+    - grouped options in help output and categorised available easyconfig parameters
+    - more consistent code style
+
+v0.8 (June 29th 2012)
+---------------------
+
+- added support for building/installing 17 additional software packages:
+    - BEAGLE, Doxygen, g2clib, g2lib, HDF, HDF5, JasPer, libpng, Maple, 
+      MrBayes, NCL, netCDF, netCDF-Fortran, Szip, WPS, WRF, zlib
+- the build procedure for WRF and WPS includes running the tests available for these packages
+- various bug fixes and enhancements:
+    - made support for interactive installers (run_cmd_qa) more robust
+    - fixed Python git package check
+    - implemented toolkit functions for determine compiler family, MPI type, MPI run command, ...
+
+v0.7 (June 18th 2012)
+---------------------
+
+- fixed BLACS build
+    - diagnostic tools to determine INTERFACE and TRANSCOMM values are now used
+- added support for building Bison, CP2K, flex
+    - with regression test enabled for CP2K as part of build process
+    - note: BLACS built with EasyBuild prior to v0.7 needs to be rebuilt for CP2K to work correctly
+- added --enable-mpi-threads to OpenMPI example easyconfigs
+    - required for correct CP2K psmp build
+- adjusted libsmm example easyconfig for lower build time
+    - to make the full regression test finish in a reasonable amount of time
+- added script to make porting of easyblocks from old to new EasyBuild codebase easier
+    - takes care of refactoring, checks for PyLint warnings/errors, ...
+- fixed several small bugs
+- prefixed EasyBuild messages with "=="
+- full regression test passed (58 easyconfigs tested)
+
+v0.6 (May 11th 2012)
+---------------------
+
+- added support for Intel compiler toolkit (ictce)
+    - which included the Intel compilers, Intel Math Kernel Library (imkl) and Intel MPI library (impi)
+- added support for building Python with nose/numpy/scipy packages
+- added simple regression test
+- this version is able to build all supplied example easyconfigs
+
+v0.5 (April 6th 2012)
+----------------------
+
+- first public release of EasyBuild
+    - after a thorough cleanup of the EasyBuild framework of the in-house version
+- supports building HPL with goalf compiler toolkit
+    - the goalf toolkit consists of the GCC compilers, and the OpenMPI, ATLAS, LAPACK, FFTW and ScaLAPACK libraries
+- also support build and installation of MVAPICH2
