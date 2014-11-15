@@ -65,7 +65,7 @@ class EB_MUMmer(ConfigureMake):
         cmd = "%s make check %s" % (self.cfg['preconfigopts'], self.cfg['configopts'])
         run_cmd(cmd, log_all=True, simple=True, log_output=True)
 
-        self.cfg.update('makeopts', 'all')
+        self.cfg.update('buildopts', 'all')
 
     def install_step(self):
         """Patch files to avoid use of build dir, install by copying files to install dir."""
@@ -103,9 +103,9 @@ class EB_MUMmer(ConfigureMake):
 
         # set $PATH and $PERLXLIB correctly
         txt = super(EB_MUMmer, self).make_module_extra()
-        txt += self.moduleGenerator.prepend_paths("PATH", ['bin'])
-        txt += self.moduleGenerator.prepend_paths("PATH", ['bin/aux_bin'])
-        txt += self.moduleGenerator.prepend_paths("PERL%sLIB" % perlmajver, ['bin/scripts'])
+        txt += self.module_generator.prepend_paths("PATH", ['bin'])
+        txt += self.module_generator.prepend_paths("PATH", ['bin/aux_bin'])
+        txt += self.module_generator.prepend_paths("PERL%sLIB" % perlmajver, ['bin/scripts'])
         return txt
 
     def sanity_check_step(self):

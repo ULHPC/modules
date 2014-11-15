@@ -30,11 +30,20 @@ EasyBuild support for building and installing Mathematica, implemented as an eas
 import os
 
 from easybuild.easyblocks.generic.binary import Binary
-from easybuild.tools.filetools import run_cmd_qa
+from easybuild.framework.easyconfig import CUSTOM
+from easybuild.tools.run import run_cmd_qa
 
 
 class EB_Mathematica(Binary):
     """Support for building/installing Mathematica."""
+
+    @staticmethod
+    def extra_options():
+        """Additional easyconfig parameters custom to Mathematica."""
+        extra_vars = [
+            ('activation_key', [None, "Activation key (expected format: 0000-0000-AAAAA)", CUSTOM]),
+        ]
+        return Binary.extra_options(extra_vars)
 
     def configure_step(self):
         """No configuration for Mathematica."""
@@ -48,13 +57,17 @@ class EB_Mathematica(Binary):
 
     def install_step(self):
         """Install Mathematica using install script."""
+
+        # make sure $DISPLAY is not set (to avoid that installer uses GUI)
+        orig_display = os.environ.pop('DISPLAY', None)
+
         cmd = "./%s_%s_LINUX.sh" % (self.name, self.version)
         shortver = '.'.join(self.version.split('.')[:2])
         qa_install_path = "/usr/local/Wolfram/%s/%s" % (self.name, shortver)
         qa = {
-            "Enter the installation directory, or press ENTER to select %s: >" % qa_install_path: self.installdir,
-            "Create directory (y/n)? >": 'y',
-            "or press ENTER to select /usr/local/bin: >": os.path.join(self.installdir, "bin"), 
+            r"Enter the installation directory, or press ENTER to select %s: >" % qa_install_path: self.installdir,
+            r"Create directory (y/n)? >": 'y',
+            r"or press ENTER to select /usr/local/bin: >": os.path.join(self.installdir, "bin"), 
         }
         no_qa = [
             "Now installing.*\n\n.*\[.*\].*",
@@ -75,6 +88,27 @@ class EB_Mathematica(Binary):
             self.log.info("Updated license file %s: %s" % (mathpass_path, mathpass_txt))
         except IOError, err:
             self.log.error("Failed to update %s with license server info: %s" % (mathpass_path, err))
+
+        # restore $DISPLAY if required
+        if orig_display is not None:
+            os.environ['DISPLAY'] = orig_display
+
+    def post_install_step(self):
+        """Activate installation by using activation key, if provided."""
+        if self.cfg['activation_key']:
+            # activation key is printed by using '$ActivationKey' in Mathematica, so no reason to keep it 'secret'
+            self.log.info("Activating installation using provided activation key '%s'." % self.cfg['activation_key'])
+            qa = {
+                r"(enter return to skip Web Activation):": self.cfg['activation_key'],
+                r"In[1]:= ": 'Quit[]',
+            }
+            noqa = [
+                '^%s %s .*' % (self.name, self.version),
+                '^Copyright.*',
+            ]
+            run_cmd_qa(os.path.join(self.installdir, 'bin', 'math'), qa, no_qa=noqa)
+        else:
+            self.log.info("No activation key provided, so skipping activation of the installation.")
 
     def sanity_check_step(self):
         """Custom sanity check for Mathematica."""

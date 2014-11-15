@@ -55,10 +55,10 @@ class EB_PSI(ConfigureMake):
     def extra_options():
         """Extra easyconfig parameters specific to PSI."""
 
-        extra_vars = [
+        extra_vars = {
             # always include running PSI unit tests (takes about 2h or less)
-            ('runtest', ["tests TESTFLAGS='-u -q'", "Run tests included with PSI, without interruption.", BUILD]),
-        ]
+            'runtest': ["tests TESTFLAGS='-u -q'", "Run tests included with PSI, without interruption.", BUILD],
+        }
         return ConfigureMake.extra_options(extra_vars)
 
     def configure_step(self):
@@ -145,5 +145,5 @@ class EB_PSI(ConfigureMake):
     def make_module_extra(self):
         """Custom variables for PSI module."""
         txt = super(EB_PSI, self).make_module_extra()
-        txt += self.moduleGenerator.set_environment('PSI4DATADIR', '$root/share/psi')
+        txt += self.module_generator.set_environment('PSI4DATADIR', '$root/share/psi')
         return txt

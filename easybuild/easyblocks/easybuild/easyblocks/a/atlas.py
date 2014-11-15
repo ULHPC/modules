@@ -58,11 +58,11 @@ class EB_ATLAS(ConfigureMake):
 
     @staticmethod
     def extra_options():
-        extra_vars = [
-                      ('ignorethrottling', [False, "Ignore check done by ATLAS for CPU throttling (not recommended) (default: False)", CUSTOM]),
-                      ('full_lapack', [False, "Build a full LAPACK library (requires netlib's LAPACK) (default: False)", CUSTOM]),
-                      ('sharedlibs', [False, "Enable building of shared libs as well (default: False)", CUSTOM])
-                     ]
+        extra_vars = {
+            'ignorethrottling': [False, "Ignore check done by ATLAS for CPU throttling (not recommended)", CUSTOM],
+            'full_lapack': [False, "Build a full LAPACK library (requires netlib's LAPACK)", CUSTOM],
+            'sharedlibs': [False, "Enable building of shared libs as well", CUSTOM],
+        }
         return ConfigureMake.extra_options(extra_vars)
 
     def configure_step(self):
@@ -153,19 +153,11 @@ Configure output:
 Configure failed, not sure why (see output above).""" % out
             self.log.error(errormsg)
 
-
-    def set_parallelism(self, nr=None):
-        """
-        Parallel build of ATLAS doesn't make sense (and doesn't work),
-        because it collects timing etc., so disable it.
-        """
-        if not nr:
-            self.log.warning("Ignoring requested parallelism, it breaks ATLAS, so setting to 1")
-        self.log.info("Disabling parallel build, makes no sense for ATLAS.")
-        super(EB_ATLAS, self).set_parallelism(1)
-
-
     def build_step(self, verbose=False):
+
+        if self.cfg['parallel'] != 1:
+            self.log.warning("Ignoring requested build parallelism, it breaks ATLAS, so setting to 1")
+            self.cfg['parallel'] = 1
 
         # default make is fine
         super(EB_ATLAS, self).build_step(verbose=verbose)

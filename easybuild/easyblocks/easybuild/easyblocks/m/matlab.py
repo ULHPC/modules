@@ -53,9 +53,9 @@ class EB_MATLAB(EasyBlock):
 
     @staticmethod
     def extra_options():
-        extra_vars = [
-                      ('java_options', ['-Xmx256m', "$_JAVA_OPTIONS value set for install and in module file.", CUSTOM]),
-                     ]
+        extra_vars = {
+            'java_options': ['-Xmx256m', "$_JAVA_OPTIONS value set for install and in module file.", CUSTOM],
+        }
         return EasyBlock.extra_options(extra_vars)
 
     def configure_step(self):
@@ -150,7 +150,7 @@ class EB_MATLAB(EasyBlock):
 
         txt = super(EB_MATLAB, self).make_module_extra()
 
-        txt += self.moduleGenerator.set_environment('_JAVA_OPTIONS', self.cfg['java_options'])
+        txt += self.module_generator.set_environment('_JAVA_OPTIONS', self.cfg['java_options'])
 
         return txt
 

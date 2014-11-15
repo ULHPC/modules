@@ -30,6 +30,8 @@ EasyBuild support for Trilinos, implemented as an easyblock
 import os
 import re
 
+from distutils.version import LooseVersion
+
 import easybuild.tools.toolchain as toolchain
 from easybuild.easyblocks.generic.cmakemake import CMakeMake
 from easybuild.framework.easyconfig import CUSTOM
@@ -43,13 +45,13 @@ class EB_Trilinos(CMakeMake):
     @staticmethod
     def extra_options():
         """Add extra config options specific to Trilinos."""
-        extra_vars = [
-                      ('shared_libs', [False, "Build shared libs; if False, build static libs. (default: False).", CUSTOM]),
-                      ('openmp', [True, "Enable OpenMP support (default: True)", CUSTOM]),
-                      ('all_exts', [True, "Enable all Trilinos packages (default: True)", CUSTOM]),
-                      ('skip_exts', [[], "List of Trilinos packages to skip (default: [])", CUSTOM]),
-                      ('verbose', [False, 'Configure for verbose output (default: False)', CUSTOM])
-                     ]
+        extra_vars = {
+            'shared_libs': [False, "Build shared libs; if False, build static libs", CUSTOM],
+            'openmp': [True, "Enable OpenMP support", CUSTOM],
+            'all_exts': [True, "Enable all Trilinos packages", CUSTOM],
+            'skip_exts': [[], "List of Trilinos packages to skip", CUSTOM],
+            'verbose': [False, "Configure for verbose output", CUSTOM],
+        }
         return CMakeMake.extra_options(extra_vars)
 
     def configure_step(self):
@@ -125,6 +127,9 @@ class EB_Trilinos(CMakeMake):
                 incdirs.append(os.path.join(suitesparse, lib, "Include"))
                 libdirs.append(os.path.join(suitesparse, lib, "Lib"))
                 libnames.append(lib.lower())
+            # add SuiteSparse config lib, it is in recent versions of suitesparse
+            libdirs.append(os.path.join(suitesparse, 'SuiteSparse_config'))
+            libnames.append('suitesparseconfig')
             self.cfg.update('configopts', '-DUMFPACK_INCLUDE_DIRS:PATH="%s"' % ';'.join(incdirs))
             self.cfg.update('configopts', '-DUMFPACK_LIBRARY_DIRS:PATH="%s"' % ';'.join(libdirs))
             self.cfg.update('configopts', '-DUMFPACK_LIBRARY_NAMES:STRING="%s"' % ';'.join(libnames))
@@ -144,7 +149,6 @@ class EB_Trilinos(CMakeMake):
             self.cfg.update('configopts', '-DSCALAPACK_INCLUDE_DIRS:PATH="%s"' % os.getenv('SCALAPACK_INC_DIR'))
             self.cfg.update('configopts', '-DSCALAPACK_LIBRARY_DIRS:PATH="%s;%s"' % (os.getenv('SCALAPACK_LIB_DIR'),
                                                                                     os.getenv('BLACS_LIB_DIR')))
-
         # PETSc
         petsc = get_software_root('PETSc')
         if petsc:
@@ -223,9 +227,16 @@ class EB_Trilinos(CMakeMake):
 
         libs = [l for l in libs if not l in self.cfg['skip_exts']]
 
+        # teuchos was refactored in 11.2
+        if LooseVersion(self.version) >= LooseVersion("11.2") and  'Teuchos' in libs:
+            # remove it
+            libs = [l for l in libs if l is not "Teuchos"]
+            # add new libs
+            libs.extend(['teuchoscomm', 'teuchoscore', 'teuchosnumerics', 'teuchosparameterlist', 'teuchosremainder'])
+
         custom_paths = {
-                        'files':[os.path.join("lib", "lib%s.a" % x.lower()) for x in libs],
-                        'dirs':['bin', 'include']
-                       }
+            'files':[os.path.join("lib", "lib%s.a" % x.lower()) for x in libs],
+            'dirs':['bin', 'include']
+        }
 
         super(EB_Trilinos, self).sanity_check_step(custom_paths=custom_paths)
