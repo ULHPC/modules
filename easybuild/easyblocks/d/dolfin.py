@@ -173,7 +173,7 @@ class EB_DOLFIN(CMakePythonPackage):
             self.log.error("Optional packages could not be found, this should not happen...")
 
         # enable verbose build, so we have enough information if something goes wrong
-        self.cfg.update('makeopts', "VERBOSE=1")
+        self.cfg.update('buildopts', "VERBOSE=1")
 
     def make_module_extra(self):
         """Set extra environment variables for DOLFIN."""
@@ -181,14 +181,14 @@ class EB_DOLFIN(CMakePythonPackage):
         txt = super(EB_DOLFIN, self).make_module_extra()
 
         # Dolfin needs to find Boost
-        txt += self.moduleGenerator.set_environment('BOOST_DIR', self.boost_dir)
+        txt += self.module_generator.set_environment('BOOST_DIR', self.boost_dir)
 
         envvars = ['I_MPI_CXX', 'I_MPI_CC']
         for envvar in envvars:
             envar_val = os.getenv(envvar)
             # if environment variable is set, also set it in module
             if envar_val:
-                txt += self.moduleGenerator.set_environment(envvar, envar_val)
+                txt += self.module_generator.set_environment(envvar, envar_val)
 
         return txt
 

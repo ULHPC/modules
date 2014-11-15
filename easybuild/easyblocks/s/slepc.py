@@ -55,10 +55,10 @@ class EB_SLEPc(ConfigureMake):
     @staticmethod
     def extra_options():
         """Add extra config options specific to SLEPc."""
-        extra_vars = [
-                      ('sourceinstall', [False, "Indicates whether a source installation should be performed (default: False)", CUSTOM]),
-                      ('runtest', ['test', "Make target to test build (default: test)", BUILD])
-                     ]
+        extra_vars = {
+            'sourceinstall': [False, "Indicates whether a source installation should be performed", CUSTOM],
+            'runtest': ['test', "Make target to test build", BUILD],
+        }
         return ConfigureMake.extra_options(extra_vars)
 
     def make_builddir(self):
@@ -125,11 +125,11 @@ class EB_SLEPc(ConfigureMake):
         txt = super(EB_SLEPc, self).make_module_extra()
 
         if self.cfg['sourceinstall']:
-            txt += self.moduleGenerator.set_environment('SLEPC_DIR', '$root/%s-%s' % (self.name.lower(),
+            txt += self.module_generator.set_environment('SLEPC_DIR', '$root/%s-%s' % (self.name.lower(),
                                                                                      self.version))
 
         else:
-            txt += self.moduleGenerator.set_environment('SLEPC_DIR', '$root')
+            txt += self.module_generator.set_environment('SLEPC_DIR', '$root')
 
         return txt
 

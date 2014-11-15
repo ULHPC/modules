@@ -40,9 +40,9 @@ class EB_ROOT(ConfigureMake):
         """
         Define extra options needed by Geant4
         """
-        extra_vars = [
-                      ('arch', [None, "Target architecture", MANDATORY]),
-                     ]
+        extra_vars = {
+            'arch': [None, "Target architecture", MANDATORY],
+        }
         return ConfigureMake.extra_options(extra_vars)
 
     def configure_step(self):
@@ -60,9 +60,9 @@ class EB_ROOT(ConfigureMake):
         """Custom extra module file entries for ROOT."""
         txt = super(EB_ROOT, self).make_module_extra()
 
-        txt += self.moduleGenerator.set_environment("ROOTSYS", "$root")
-        txt += self.moduleGenerator.prepend_paths("LD_LIBRARY_PATH",["lib/root"])
-        txt += self.moduleGenerator.prepend_paths("PYTHONPATH",["lib/root", "lib/root/python"])
+        txt += self.module_generator.set_environment("ROOTSYS", "$root")
+        txt += self.module_generator.prepend_paths("LD_LIBRARY_PATH",["lib/root"])
+        txt += self.module_generator.prepend_paths("PYTHONPATH",["lib/root", "lib/root/python"])
 
         return txt
 

@@ -34,10 +34,11 @@ EasyBuild support for installing the Intel Trace Analyzer and Collector (ITAC), 
 
 import os
 
+from distutils.version import LooseVersion
+
 from easybuild.framework.easyconfig import CUSTOM
 from easybuild.easyblocks.generic.intelbase import IntelBase
 from easybuild.tools.filetools import run_cmd
-
 
 class EB_itac(IntelBase):
     """
@@ -47,7 +48,9 @@ class EB_itac(IntelBase):
 
     @staticmethod
     def extra_options():
-        extra_vars = [('preferredmpi', ['impi3', "Preferred MPI type (default: 'impi3')", CUSTOM])]
+        extra_vars = {
+            'preferredmpi': ['impi3', "Preferred MPI type", CUSTOM],
+        }
         return IntelBase.extra_options(extra_vars)
 
     def install_step(self):
@@ -57,7 +60,14 @@ class EB_itac(IntelBase):
         - execute command
         """
 
-        silent = \
+        if LooseVersion(self.version) >= LooseVersion('8.1'):
+            super(EB_itac, self).install_step(silent_cfg_names_map=None)
+
+            # itac v9.0.1 installer create itac/<version> subdir, so stuff needs to be moved afterwards
+            if LooseVersion(self.version) >= LooseVersion('9.0'):
+                super(EB_itac, self).move_after_install()
+        else:
+            silent = \
 """
 [itac]
 INSTALLDIR=%(ins)s
@@ -70,30 +80,30 @@ DEFAULT_MPI=%(mpi)s
 EULA=accept
 """ % {'lic': self.license_file, 'ins': self.installdir, 'mpi': self.cfg['preferredmpi']}
 
-        # already in correct directory
-        silentcfg = os.path.join(os.getcwd(), "silent.cfg")
-        f = open(silentcfg, 'w')
-        f.write(silent)
-        f.close()
-        self.log.debug("Contents of %s: %s" % (silentcfg, silent))
+            # already in correct directory
+            silentcfg = os.path.join(os.getcwd(), "silent.cfg")
+            f = open(silentcfg, 'w')
+            f.write(silent)
+            f.close()
+            self.log.debug("Contents of %s: %s" % (silentcfg, silent))
 
-        tmpdir = os.path.join(os.getcwd(), self.version, 'mytmpdir')
-        try:
-            os.makedirs(tmpdir)
-        except:
-            self.log.exception("Directory %s can't be created" % (tmpdir))
+            tmpdir = os.path.join(os.getcwd(), self.version, 'mytmpdir')
+            try:
+                os.makedirs(tmpdir)
+            except:
+                self.log.exception("Directory %s can't be created" % (tmpdir))
 
-        cmd = "./install.sh --tmp-dir=%s --silent=%s" % (tmpdir, silentcfg)
+            cmd = "./install.sh --tmp-dir=%s --silent=%s" % (tmpdir, silentcfg)
 
-        run_cmd(cmd, log_all=True, simple=True)
+            run_cmd(cmd, log_all=True, simple=True)
 
     def sanity_check_step(self):
         """Custom sanity check paths for ITAC."""
 
         custom_paths = {
-                        'files': ["include/%s" % x for x in ["i_malloc.h", "VT_dynamic.h", "VT.h", "VT.inc"]],
-                        'dirs': ["bin", "itac", "lib", "slib"]
-                       }
+            'files': ["include/%s" % x for x in ["i_malloc.h", "VT_dynamic.h", "VT.h", "VT.inc"]],
+            'dirs': ["bin", "lib", "slib"],
+        }
 
         super(EB_itac, self).sanity_check_step(custom_paths=custom_paths)
 
@@ -101,32 +111,33 @@ EULA=accept
         """
         A dictionary of possible directories to look for
         """
-        preferredmpi = self.cfg["preferredmpi"]
-        guesses = {
-                   'MANPATH': ['man'],
-                   'CLASSPATH': ['itac/lib_%s' % preferredmpi],
-                   'VT_LIB_DIR': ['itac/lib_%s' % preferredmpi],
-                   'VT_SLIB_DIR': ['itac/lib_s%s' % preferredmpi]
-                  }
+        guesses = {}
+        if LooseVersion(self.version) < LooseVersion('9.0'):
+            preferredmpi = self.cfg["preferredmpi"]
+            guesses.update({
+                'MANPATH': ['man'],
+                'CLASSPATH': ['itac/lib_%s' % preferredmpi],
+                'VT_LIB_DIR': ['itac/lib_%s' % preferredmpi],
+                'VT_SLIB_DIR': ['itac/lib_s%s' % preferredmpi]
+            })
 
         if self.cfg['m32']:
             guesses.update({
-                            'PATH': ['bin', 'bin/ia32', 'ia32/bin'],
-                            'LD_LIBRARY_PATH': ['lib', 'lib/ia32', 'ia32/lib'],
-                           })
+                'PATH': ['bin', 'bin/ia32', 'ia32/bin'],
+                'LD_LIBRARY_PATH': ['lib', 'lib/ia32', 'ia32/lib'],
+            })
         else:
             guesses.update({
-                            'PATH': ['bin', 'bin/intel64', 'bin64'],
-                            'LD_LIBRARY_PATH': ['lib', 'lib/intel64', 'lib64'],
-                           })
+                'PATH': ['bin', 'bin/intel64', 'bin64'],
+                'LD_LIBRARY_PATH': ['lib', 'lib/intel64', 'lib64'],
+            })
         return guesses
 
     def make_module_extra(self):
         """Overwritten from IntelBase to add extra txt"""
         txt = super(EB_itac, self).make_module_extra()
-        txt += "prepend-path\t%s\t\t%s\n" % (self.license_env_var, self.license_file)
-        txt += "setenv\t%s\t\t$root\n" % 'VT_ROOT'
-        txt += "setenv\t%s\t\t%s\n" % ('VT_MPI', self.cfg['preferredmpi'])
-        txt += "setenv\t%s\t\t%s\n" % ('VT_ADD_LIBS', '"-ldwarf -lelf -lvtunwind -lnsl -lm -ldl -lpthread"')
-
+        txt += self.module_generator.prepend_paths(self.license_env_var, [self.license_file], allow_abs=True)
+        txt += self.module_generator.set_environment('VT_ROOT', '$root')
+        txt += self.module_generator.set_environment('VT_MPI', self.cfg['preferredmpi'])
+        txt += self.module_generator.set_environment('VT_ADD_LIBS', "-ldwarf -lelf -lvtunwind -lnsl -lm -ldl -lpthread")
         return txt

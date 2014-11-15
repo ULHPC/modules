@@ -53,14 +53,14 @@ class EB_PETSc(ConfigureMake):
     @staticmethod
     def extra_options():
         """Add extra config options specific to PETSc."""
-        extra_vars = [
-                      ('sourceinstall', [False, "Indicates whether a source installation should be performed (default: False)", CUSTOM]),
-                      ('shared_libs', [False, "Build shared libraries (default: False)", CUSTOM]),
-                      ('with_papi', [False, "Enable PAPI support (default: False)", CUSTOM]),
-                      ('papi_inc', ['/usr/include', "Path for PAPI include files (default: /usr/include)", CUSTOM]),
-                      ('papi_lib', ['/usr/lib64/libpapi.so', "Path for PAPI library (default: '/usr/lib64/libpapi.so')", CUSTOM]),
-                      ('runtest', ['test', "Make target to test build (default: test)", BUILD])
-                     ]
+        extra_vars = {
+            'sourceinstall': [False, "Indicates whether a source installation should be performed", CUSTOM],
+            'shared_libs': [False, "Build shared libraries", CUSTOM],
+            'with_papi': [False, "Enable PAPI support", CUSTOM],
+            'papi_inc': ['/usr/include', "Path for PAPI include files", CUSTOM],
+            'papi_lib': ['/usr/lib64/libpapi.so', "Path for PAPI library", CUSTOM],
+            'runtest': ['test', "Make target to test build", BUILD],
+        }
         return ConfigureMake.extra_options(extra_vars)
 
     def make_builddir(self):
@@ -77,7 +77,6 @@ class EB_PETSc(ConfigureMake):
 
         Configure procedure is much more concise for older versions (< v3).
         """
-
         if LooseVersion(self.version) >= LooseVersion("3"):
 
             # compilers
@@ -86,9 +85,14 @@ class EB_PETSc(ConfigureMake):
             self.cfg.update('configopts', '--with-fc="%s"' % os.getenv('F90'))
 
             # compiler flags
-            self.cfg.update('configopts', '--with-cflags="%s"' % os.getenv('CFLAGS'))
-            self.cfg.update('configopts', '--with-cxxflags="%s"' % os.getenv('CXXFLAGS'))
-            self.cfg.update('configopts', '--with-fcflags="%s"' % os.getenv('F90FLAGS'))
+            if LooseVersion(self.version) >= LooseVersion("3.5"):
+                self.cfg.update('configopts', '--CFLAGS="%s"' % os.getenv('CFLAGS'))
+                self.cfg.update('configopts', '--CXXFLAGS="%s"' % os.getenv('CXXFLAGS'))
+                self.cfg.update('configopts', '--FFLAGS="%s"' % os.getenv('F90FLAGS'))
+            else:
+                self.cfg.update('configopts', '--with-cflags="%s"' % os.getenv('CFLAGS'))
+                self.cfg.update('configopts', '--with-cxxflags="%s"' % os.getenv('CXXFLAGS'))
+                self.cfg.update('configopts', '--with-fcflags="%s"' % os.getenv('F90FLAGS'))
 
             if not self.toolchain.comp_family() == toolchain.GCC:  #@UndefinedVariable
                 self.cfg.update('configopts', '--with-gnu-compilers=0')
@@ -124,8 +128,11 @@ class EB_PETSc(ConfigureMake):
                 if self.cfg['shared_libs']:
                     self.cfg.update('configopts', '--with-mpi4py=1')
 
-            # BLACS, FFTW, ScaLAPACK
-            for dep in ["BLACS", "FFTW", "ScaLAPACK"]:
+            # FFTW, ScaLAPACK (and BLACS for older PETSc versions)
+            deps = ["FFTW", "ScaLAPACK"]
+            if LooseVersion(self.version) < LooseVersion("3.5"):
+                deps.append("BLACS")
+            for dep in deps:
                 inc = os.getenv('%s_INC_DIR' % dep.upper())
                 libdir = os.getenv('%s_LIB_DIR' % dep.upper())
                 libs = os.getenv('%s_STATIC_LIBS' % dep.upper())
@@ -143,40 +150,56 @@ class EB_PETSc(ConfigureMake):
             if bl_libdir and bl_libs:
                 self.cfg.update('configopts', '--with-blas-lapack-lib=[%s/%s]' % (bl_libdir, bl_libs))
             else:
-                    self.log.error("One or more environment variables for BLAS/LAPACK not defined?")
+                self.log.error("One or more environment variables for BLAS/LAPACK not defined?")
 
             # additional dependencies
             # filter out deps handled seperately
-            depfilter = self.cfg.builddependencies() + ["BLACS", "BLAS", "FFTW", "LAPACK", "numpy",
+            depfilter = self.cfg.builddependencies() + ["BLACS", "BLAS", "CMake", "FFTW", "LAPACK", "numpy",
                                                         "mpi4py", "papi", "ScaLAPACK", "SuiteSparse"]
+
             deps = [dep['name'] for dep in self.cfg.dependencies() if not dep['name'] in depfilter]
             for dep in deps:
                 if type(dep) == str:
                     dep = (dep, dep)
                 deproot = get_software_root(dep[0])
                 if deproot:
-                    withdep = "--with-%s" % dep[1].lower()
+                    if (LooseVersion(self.version) >= LooseVersion("3.5")) and (dep[1] == "SCOTCH"):
+                        withdep = "--with-pt%s" % dep[1].lower()  # --with-ptscotch is the configopt PETSc >= 3.5
+                    else:
+                        withdep = "--with-%s" % dep[1].lower()
                     self.cfg.update('configopts', '%s=1 %s-dir=%s' % (withdep, withdep, deproot))
 
-            # CHOLMOD and UMFPACK are part of SuiteSparse
+            # SuiteSparse options changed in PETSc 3.5,
             suitesparse = get_software_root('SuiteSparse')
             if suitesparse:
-                withdep = "--with-umfpack"
-                # specified order of libs matters!
-                umfpack_libs = [os.path.join(suitesparse, l, "Lib", "lib%s.a" % l.lower())
-                                for l in ["UMFPACK", "CHOLMOD", "COLAMD", "AMD"]]
+                if LooseVersion(self.version) >= LooseVersion("3.5"):
+                    withdep = "--with-suitesparse"
+                    # specified order of libs matters!
+                    ss_libs = ["UMFPACK", "KLU", "CHOLMOD", "BTF", "CCOLAMD", "COLAMD", "CAMD", "AMD"]
 
-                self.cfg.update('configopts', ' '.join([(withdep+x) for x in [
-                                                                             "=1",
-                                                                             "-include=%s" % os.path.join(suitesparse, "UMFPACK", "Include"),
-                                                                             "-lib=[%s]" % ','.join(umfpack_libs)
-                                                                            ]
-                                                       ])
-                               )
+                    suitesparse_inc = [os.path.join(suitesparse, l, "Include")
+                                    for l in ss_libs]
+                    suitesparse_inc.append(os.path.join(suitesparse, "SuiteSparse_config"))
+                    inc_spec = "-include=[%s]" % ','.join(suitesparse_inc)
+
+                    suitesparse_libs = [os.path.join(suitesparse, l, "Lib", "lib%s.a" % l.lower())
+                                    for l in ss_libs]
+                    suitesparse_libs.append(os.path.join(suitesparse, "SuiteSparse_config", "libsuitesparseconfig.a"))
+                    lib_spec = "-lib=[%s]" % ','.join(suitesparse_libs)
+                else:
+                    # CHOLMOD and UMFPACK are part of SuiteSparse (PETSc < 3.5)
+                    withdep = "--with-umfpack"
+                    inc_spec = "-include=%s" % os.path.join(suitesparse, "UMFPACK", "Include")
+                    # specified order of libs matters!
+                    umfpack_libs = [os.path.join(suitesparse, l, "Lib", "lib%s.a" % l.lower())
+                                    for l in ["UMFPACK", "CHOLMOD", "COLAMD", "AMD"]]
+                    lib_spec = "-lib=[%s]" % ','.join(umfpack_libs)
+
+                self.cfg.update('configopts', ' '.join([withdep + spec for spec in ['=1', inc_spec, lib_spec]]))
 
             # set PETSC_DIR for configure (env) and build_step
             env.setvar('PETSC_DIR', self.cfg['start_dir'])
-            self.cfg.update('makeopts', 'PETSC_DIR=%s' % self.cfg['start_dir'])
+            self.cfg.update('buildopts', 'PETSC_DIR=%s' % self.cfg['start_dir'])
 
             if self.cfg['sourceinstall']:
                 # run configure without --prefix (required)
@@ -196,7 +219,7 @@ class EB_PETSc(ConfigureMake):
                 res = petsc_arch_regex.search(out)
                 if res:
                     self.petsc_arch = res.group(1)
-                    self.cfg.update('makeopts', 'PETSC_ARCH=%s' % self.petsc_arch)
+                    self.cfg.update('buildopts', 'PETSC_ARCH=%s' % self.petsc_arch)
                 else:
                     self.log.error("Failed to determine PETSC_ARCH setting.")
 
@@ -216,9 +239,12 @@ class EB_PETSc(ConfigureMake):
 
             cmd = "./config/configure.py %s" % self.get_cfg('configopts')
             run_cmd(cmd, log_all=True, simple=True)
+        # PETSc > 3.5, make does not accept -j 
+        if LooseVersion(self.version) >= LooseVersion("3.5"):
+            self.cfg['parallel'] = None
 
     # default make should be fine
-
+    
     def install_step(self):
         """
         Install using make install (for non-source installations), 
@@ -263,11 +289,11 @@ class EB_PETSc(ConfigureMake):
         txt = super(EB_PETSc, self).make_module_extra()
 
         if self.cfg['sourceinstall']:
-            txt += self.moduleGenerator.set_environment('PETSC_DIR', '$root/%s' % self.petsc_subdir)
-            txt += self.moduleGenerator.set_environment('PETSC_ARCH', self.petsc_arch)
+            txt += self.module_generator.set_environment('PETSC_DIR', '$root/%s' % self.petsc_subdir)
+            txt += self.module_generator.set_environment('PETSC_ARCH', self.petsc_arch)
 
         else:
-            txt += self.moduleGenerator.set_environment('PETSC_DIR', '$root')
+            txt += self.module_generator.set_environment('PETSC_DIR', '$root')
 
         return txt
 

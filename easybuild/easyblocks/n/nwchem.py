@@ -36,10 +36,11 @@ import tempfile
 import easybuild.tools.config as config
 import easybuild.tools.environment as env
 import easybuild.tools.toolchain as toolchain
+from distutils.version import LooseVersion
 from easybuild.easyblocks.generic.configuremake import ConfigureMake
 from easybuild.framework.easyconfig import CUSTOM
 from easybuild.tools.filetools import mkdir, run_cmd, adjust_permissions
-from easybuild.tools.modules import get_software_root, get_software_version
+from easybuild.tools.modules import get_software_libdir, get_software_root, get_software_version
 
 
 class EB_NWChem(ConfigureMake):
@@ -55,30 +56,31 @@ class EB_NWChem(ConfigureMake):
         self.home_nwchemrc = os.path.join(os.getenv('HOME'), '.nwchemrc')
         # local NWChem .nwchemrc config file, to which symlink will point
         # using this approach, multiple parallel builds (on different nodes) can use the same symlink
-        self.local_nwchemrc = os.path.join(tempfile.gettempdir(), os.getenv('USER'), 'easybuild_nwchem', '.nwchemrc')
+        common_tmp_dir = os.path.dirname(tempfile.gettempdir())  # common tmp directory, same across nodes
+        self.local_nwchemrc = os.path.join(common_tmp_dir, os.getenv('USER'), 'easybuild_nwchem', '.nwchemrc')
 
     @staticmethod
     def extra_options():
         """Custom easyconfig parameters for NWChem."""
 
-        extra_vars = [
-                      ('target', ["LINUX64", "Target platform", CUSTOM]),
-                      # possible options for ARMCI_NETWORK on LINUX64 with Infiniband:
-                      # OPENIB, MPI-MT, MPI-SPAWN, MELLANOX
-                      ('armci_network', ["OPENIB", "Network protocol to use", CUSTOM]),
-                      ('msg_comms', ["MPI", "Type of message communication", CUSTOM]),
-                      ('modules', ["all", "NWChem modules to build", CUSTOM]),
-                      ('lib_defines', ["", "Additional defines for C preprocessor", CUSTOM]),
-                      ('tests', [True, "Run example test cases", CUSTOM]),
-                      # lots of tests fail, so allow a certain fail ratio
-                      ('max_fail_ratio', [0.5, "Maximum test case fail ratio", CUSTOM])
-                     ]
+        extra_vars = {
+            'target': ["LINUX64", "Target platform", CUSTOM],
+            # possible options for ARMCI_NETWORK on LINUX64 with Infiniband:
+            # OPENIB, MPI-MT, MPI-SPAWN, MELLANOX
+            'armci_network': ["OPENIB", "Network protocol to use", CUSTOM],
+            'msg_comms': ["MPI", "Type of message communication", CUSTOM],
+            'modules': ["all", "NWChem modules to build", CUSTOM],
+            'lib_defines': ["", "Additional defines for C preprocessor", CUSTOM],
+            'tests': [True, "Run example test cases", CUSTOM],
+            # lots of tests fail, so allow a certain fail ratio
+            'max_fail_ratio': [0.5, "Maximum test case fail ratio", CUSTOM],
+        }
         return ConfigureMake.extra_options(extra_vars)
 
     def setvar_env_makeopt(self, name, value):
         """Set a variable both in the environment and a an option to make."""
         env.setvar(name, value)
-        self.cfg.update('makeopts', "%s='%s'" % (name, value))
+        self.cfg.update('buildopts', "%s='%s'" % (name, value))
 
     def configure_step(self):
         """Custom configuration procedure for NWChem."""
@@ -86,15 +88,21 @@ class EB_NWChem(ConfigureMake):
         # check whether a (valid) symlink to a .nwchemrc config file exists (via a dummy file if necessary)
         # fail early if the link is not what's we expect, since running the test cases will likely fail in this case
         try:
-            if os.path.exists(self.home_nwchemrc):
+            if os.path.exists(self.home_nwchemrc) or os.path.islink(self.home_nwchemrc):
                 # create a dummy file to check symlink
                 if not os.path.exists(self.local_nwchemrc):
-                    open(self.local_nwchemrc, 'w').write('dummy')
-                if not os.path.samefile(self.home_nwchemrc, self.local_nwchemrc):
+                    local_nwchemrc_dir = os.path.dirname(self.local_nwchemrc)
+                    if not os.path.exists(local_nwchemrc_dir):
+                        os.makedirs(local_nwchemrc_dir)
+                    f = open(self.local_nwchemrc, 'w')
+                    f.write('dummy')
+                    f.close()
+                self.log.debug("Contents of %s: %s" % (os.path.dirname(self.local_nwchemrc), os.listdir(os.path.dirname(self.local_nwchemrc))))
+                if os.path.exists(self.home_nwchemrc) and not os.path.samefile(self.home_nwchemrc, self.local_nwchemrc):
                     msg = "Found %s, but it's not a symlink to %s" % (self.home_nwchemrc, self.local_nwchemrc)
                     msg += "\nPlease (re)move %s while installing NWChem; it can be restored later" % self.home_nwchemrc
                     self.log.error(msg)
-                # ok to remove, we'll recreated it anyway
+                # ok to remove, we'll recreate it anyway
                 os.remove(self.local_nwchemrc)
         except (IOError, OSError), err:
             self.log.error("Failed to validate %s symlink: %s" % (self.home_nwchemrc, err))
@@ -135,9 +143,28 @@ class EB_NWChem(ConfigureMake):
             env.setvar('PYTHONHOME', python_root)
             pyver = '.'.join(get_software_version('Python').split('.')[0:2])
             env.setvar('PYTHONVERSION', pyver)
+            # if libreadline is loaded, assume it was a dependency for Python
+            # pass -lreadline to avoid linking issues (libpython2.7.a doesn't include readline symbols)
+            libreadline = get_software_root('libreadline')
+            if libreadline:
+                libreadline_libdir = os.path.join(libreadline, get_software_libdir('libreadline'))
+                ncurses = get_software_root('ncurses')
+                if not ncurses:
+                    self.log.error("ncurses is not loaded, but required to link with libreadline")
+                ncurses_libdir = os.path.join(ncurses, get_software_libdir('ncurses'))
+                readline_libs = ' '.join([
+                    os.path.join(libreadline_libdir, 'libreadline.a'),
+                    os.path.join(ncurses_libdir, 'libcurses.a'),
+                ])
+                extra_libs = os.environ.get('EXTRA_LIBS', '')
+                env.setvar('EXTRA_LIBS', ' '.join([extra_libs, readline_libs]))
 
         env.setvar('LARGE_FILES', 'TRUE')
         env.setvar('USE_NOFSCHECK', 'TRUE')
+        env.setvar('CCSDTLR', 'y')  # enable CCSDTLR 
+        env.setvar('CCSDTQ', 'y') # enable CCSDTQ (compilation is long, executable is big)
+        if LooseVersion(self.version) >= LooseVersion("6.2"):
+            env.setvar('MRCC_METHODS','y') # enable multireference coupled cluster capability
 
         for var in ['USE_MPI', 'USE_MPIF', 'USE_MPIF4']:
             env.setvar(var, 'y')
@@ -191,7 +218,7 @@ class EB_NWChem(ConfigureMake):
         run_cmd("make clean", simple=True, log_all=True, log_ok=True)
 
         # configure build
-        cmd = "make %s nwchem_config" % self.cfg['makeopts']
+        cmd = "make %s nwchem_config" % self.cfg['buildopts']
         run_cmd(cmd, simple=True, log_all=True, log_ok=True, log_output=True)
 
     def build_step(self):
@@ -203,8 +230,8 @@ class EB_NWChem(ConfigureMake):
         # check whether 64-bit integers should be used, and act on it
         if not self.toolchain.options['i8']:
             if self.cfg['parallel']:
-                self.cfg.update('makeopts', '-j %s' % self.cfg['parallel'])
-            run_cmd("make %s 64_to_32" % self.cfg['makeopts'], simple=True, log_all=True, log_ok=True, log_output=True)
+                self.cfg.update('buildopts', '-j %s' % self.cfg['parallel'])
+            run_cmd("make %s 64_to_32" % self.cfg['buildopts'], simple=True, log_all=True, log_ok=True, log_output=True)
 
             self.setvar_env_makeopt('USE_64TO32', "y")
 
@@ -271,17 +298,17 @@ class EB_NWChem(ConfigureMake):
         # create NWChem settings file
         fn = os.path.join(self.installdir, 'data', 'default.nwchemrc')
         txt = '\n'.join([
-                         "nwchem_basis_library %(path)s/data/libraries/",
-                         "nwchem_nwpw_library %(path)s/data/libraryps/",
-                         "ffield amber",
-                         "amber_1 %(path)s/data/amber_s/",
-                         "amber_2 %(path)s/data/amber_q/",
-                         "amber_3 %(path)s/data/amber_x/",
-                         "amber_4 %(path)s/data/amber_u/",
-                         "spce %(path)s/data/solvents/spce.rst",
-                         "charmm_s %(path)s/data/charmm_s/",
-                         "charmm_x %(path)s/data/charmm_x/",
-                        ]) % {'path': self.installdir}
+            "nwchem_basis_library %(path)s/data/libraries/",
+            "nwchem_nwpw_library %(path)s/data/libraryps/",
+            "ffield amber",
+            "amber_1 %(path)s/data/amber_s/",
+            "amber_2 %(path)s/data/amber_q/",
+            "amber_3 %(path)s/data/amber_x/",
+            "amber_4 %(path)s/data/amber_u/",
+            "spce %(path)s/data/solvents/spce.rst",
+            "charmm_s %(path)s/data/charmm_s/",
+            "charmm_x %(path)s/data/charmm_x/",
+        ]) % {'path': self.installdir}
 
         try:
             f = open(fn, 'w')
@@ -313,9 +340,11 @@ class EB_NWChem(ConfigureMake):
 
         txt = super(EB_NWChem, self).make_module_extra()
 
-        txt += self.moduleGenerator.set_environment("PYTHONHOME", get_software_root('Python'))
+        txt += self.module_generator.set_environment("PYTHONHOME", get_software_root('Python'))
         # '/' at the end is critical for NWCHEM_BASIS_LIBRARY!
-        txt += self.moduleGenerator.set_environment('NWCHEM_BASIS_LIBRARY', "$root/data/libraries/")
+        txt += self.module_generator.set_environment('NWCHEM_BASIS_LIBRARY', "$root/data/libraries/")
+        if LooseVersion(self.version) >= LooseVersion("6.3"):
+            txt += self.module_generator.set_environment('NWCHEM_NWPW_LIBRARY', "$root/data/libraryps/")
 
         return txt
 
@@ -341,19 +370,24 @@ class EB_NWChem(ConfigureMake):
 
         # run all examples if no test cases were specified
         # order and grouping is important for some of these tests (e.g., [o]h3tr*
+        # Some of the examples are deleted
+        # missing md parameter files: dna.nw, mache.nw, 18c6NaK.nw, membrane.nw, sdm.nw
+        # method not implemented (unknown thory) or keyword not found: triplet.nw, C2H6.nw, pspw_MgO.nw, ccsdt_polar_small.nw, CG.nw
+        # no convergence: diamond.nw
+        # Too much memory required: ccsd_polar_big.nw
         if type(self.cfg['tests']) is bool:
             examples = [('qmd', ['3carbo_dft.nw', '3carbo.nw', 'h2o_scf.nw']),
-                        ('pspw', ['C2.nw', 'C6.nw', 'CG.nw', 'Carbene.nw', 'Na16.nw', 'NaCl.nw']),
-                        ('tcepolar', ['ccsdt_polar_small.nw', 'ccsd_polar_big.nw', 'ccsd_polar_small.nw']),
-                        ('dirdyvtst/h3', ['h3tr1.nw', 'h3tr2.nw', 'h3tr3.nw', 'h3tr4.nw', 'h3tr5.nw']),
-                        ('dirdyvtst/oh3', ['oh3tr1.nw', 'oh3tr2.nw', 'oh3tr3.nw', 'oh3tr4.nw', 'oh3tr5.nw']),
-                        ('pspw/session1', ['band.nw', 'si4.linear.nw', 'si4.rhombus.nw', 'S2-drift.nw', 'diamond.nw',
+                        ('pspw', ['C2.nw', 'C6.nw', 'Carbene.nw', 'Na16.nw', 'NaCl.nw']),
+                        ('tcepolar', ['ccsd_polar_small.nw']),
+                        ('dirdyvtst/h3', ['h3tr1.nw', 'h3tr2.nw']),
+                        ('dirdyvtst/h3', ['h3tr3.nw']), ('dirdyvtst/h3', ['h3tr4.nw']), ('dirdyvtst/h3', ['h3tr5.nw']),
+                        ('dirdyvtst/oh3', ['oh3tr1.nw', 'oh3tr2.nw']),
+                        ('dirdyvtst/oh3', ['oh3tr3.nw']), ('dirdyvtst/oh3', ['oh3tr4.nw']), ('dirdyvtst/oh3', ['oh3tr5.nw']),
+                        ('pspw/session1', ['band.nw', 'si4.linear.nw', 'si4.rhombus.nw', 'S2-drift.nw', 
                                            'silicon.nw', 'S2.nw', 'si4.rectangle.nw']),
-                        ('pspw/MgO+Cu', ['pspw_MgO.nw']), ('pspw/C2H6', ['C2H6.nw']), ('pspw/Carbene', ['triplet.nw']),
-                        ('md/dna', ['dna.nw']), ('md/ache', ['mache.nw']), ('md/myo', ['myo.nw']),
-                        ('md/nak', ['NaK.nw']), ('md/nak', ['18c6NaK.nw']), ('md/membrane', ['membrane.nw']),
-                        ('md/sdm', ['sdm.nw']), ('md/crown', ['crown.nw']), ('md/hrc', ['hrc.nw']),
+                        ('md/myo', ['myo.nw']), ('md/nak', ['NaK.nw']), ('md/crown', ['crown.nw']), ('md/hrc', ['hrc.nw']),
                         ('md/benzene', ['benzene.nw'])]
+
             self.cfg['tests'] = [(os.path.join(self.examples_dir, d), l) for (d, l) in examples]
             self.log.info("List of examples to be run as test cases: %s" % self.cfg['tests'])
 
