@@ -1,0 +1,18 @@
+easyblock = "Toolchain"
+
+name = 'ictce'
+version = '4.0.6'
+
+homepage = 'http://software.intel.com/en-us/intel-cluster-toolchain-compiler/'
+description = """Intel Cluster Toolkit Compiler Edition provides Intel C/C++ and Fortran compilers, Intel MPI & Intel MKL."""
+
+toolchain = {'name': 'dummy', 'version': 'dummy'}
+
+dependencies = [ 
+                ('icc', '2011.6.233'),
+                ('ifort', '2011.6.233'),
+                ('impi', '4.0.2.003'),
+                ('imkl', '10.3.6.233')
+               ]
+
+moduleclass = 'toolchain'
