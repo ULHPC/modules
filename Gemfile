@@ -2,4 +2,4 @@
 source "https://rubygems.org"
 
 # gem "rails"
-gem 'falkorlib' #, :path => '~/git/github.com/Falkor/falkorlib'
+gem 'falkorlib' , :path => '~/git/github.com/Falkor/falkorlib'
