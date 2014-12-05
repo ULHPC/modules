@@ -18,17 +18,17 @@ FalkorLib.config.git do |c|
       :url    => 'https://github.com/ULHPC/easybuild-framework.git',
       :branch => 'develop'
     },
-    # 'easybuild/easyblocks' => {
-    #   :url    => 'https://github.com/ULHPC/easybuild-easyblocks.git',
-    #   :branch => 'develop'
-    # },
-    # 'easybuild/easyconfigs' => {
-    #   :url    => 'https://github.com/ULHPC/easybuild-easyconfigs.git',
-    #   :branch => 'uni.lu'
-    # },
-    # 'easybuild/wiki' => {
-    #   :url    => 'https://github.com/hpcugent/easybuild-wiki.git',
-    # },
+    'easybuild/easyblocks' => {
+      :url    => 'https://github.com/ULHPC/easybuild-easyblocks.git',
+      :branch => 'develop'
+    },
+    'easybuild/easyconfigs' => {
+      :url    => 'https://github.com/ULHPC/easybuild-easyconfigs.git',
+      :branch => 'uni.lu'
+    },
+    'easybuild/wiki' => {
+      :url    => 'https://github.com/hpcugent/easybuild-wiki.git',
+    },
   }
 end
 
