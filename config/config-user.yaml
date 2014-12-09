@@ -1,0 +1,4 @@
+mns : ThematicMNS
+buildmode : local
+apps_root : /usr/local/apps
+release : HEAD
