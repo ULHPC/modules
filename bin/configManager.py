@@ -201,6 +201,9 @@ def generateCommonConfig(hashTable):
     # Expanding all the environment variables (if any)
     configExpandVars(config)
 
+    # Make srcpath an absolute path
+    config['srcpath'] = os.path.abspath(config['srcpath'])
+
     # Replace short names for the MNS with the real values
     expandMNS(config)
 
@@ -261,7 +264,10 @@ def generateReleasedir(hashTable):
 
 # Generate a value for the rootinstall field of the dict.
 def generateRootinstall(hashTable):
-	hashTable['rootinstall'] = os.path.join(hashTable['apps_root'], hashTable['releasedir'])
+    if any(True for x in ['gh_ebuser', 'git_ebframework', 'git_ebblocks', 'git_ebconfigs'] if x in hashTable):
+        hashTable['rootinstall'] = os.path.join(hashTable['apps_root'], hashTable['releasedir'] + '_alt.sources')
+    else:
+    	hashTable['rootinstall'] = os.path.join(hashTable['apps_root'], hashTable['releasedir'])
 
 
 # Generate a value for the swsets_config field of the dict.

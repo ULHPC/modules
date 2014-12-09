@@ -68,7 +68,8 @@ def easybuildFilesInstaller(hashTable):
 	os.chdir(os.path.join(hashTable['rootinstall'], '.installRef'))
 	subprocess.check_call(['git', 'init'])
 	subprocess.check_call(['touch', 'temp'])
-	subprocess.check_call(['git', 'commit', '-m', "'initial commit'"])
+	subprocess.check_call(['git', 'add', 'temp'])
+	subprocess.check_call(['git', 'commit', '-m', 'initial commit'])
 	tmp = os.getcwd()
 	for k,v in altSources.iteritems():
 		# Crash if the directory is not empty, not critical, but what would we do in this case ?
@@ -80,10 +81,10 @@ def easybuildFilesInstaller(hashTable):
 		# If a branch is provided we use it, otherwise we clone the one pointed by HEAD.
 		if v[1] == None:
 			subprocess.check_call(['git', 'checkout', 'FETCH_HEAD', '-b', k+'-FETCH_HEAD'])
-			subprocess.checkout(['git', 'filter-branch', '-f', k+'-FETCH_HEAD'])
+			subprocess.check_call(['git', 'filter-branch', '-f', k+'-FETCH_HEAD'])
 			subprocess.check_call(['git', 'checkout', 'master'])
 			subprocess.check_call(['git', 'submodule', 'add', '-b', k+'-FETCH_HEAD', './', k])
-			subprocess.check_call(['git', 'branch', '-d', k+'-FETCH_HEAD'])
+			subprocess.check_call(['git', 'branch', '-D', k+'-FETCH_HEAD'])
 		else:
 			subprocess.check_call(['git', 'checkout', 'install-'+k+'/'+v[1], '-b', k+'-'+v[1]])
 			subprocess.checkout(['git', 'filter-branch', '-f', k+'-'+v[1]])
@@ -96,25 +97,28 @@ def easybuildFilesInstaller(hashTable):
 		os.chdir(tmp)
 		subprocess.check_call(['git', 'commit', '-m', "'Adding "+k+"'"])
 
-	# We complete the EasyBuild files with the ones from the subtree if necessary
-	subprocess.check_call(['git', 'remote', 'add', '-f', 'install-resif', hashTable['srcpath']])
-
-	for k in ['easybuild-framework', 'easybuild-easyblocks', 'easybuild-easyconfigs']:
-		if not k in altSources:
-			ebPart = re.search("[^-]*$", k).group(0)
-			if 'branch' in hashTable:
-				subprocess.check_call(['git', 'checkout', 'install-resif/'+hashTable['branch'], '-b', k])
-			elif hashTable['release'] != 'HEAD':
-				subprocess.check_call(['git', 'checkout', hashTable['release'], '-b', k])
-			subprocess.check_call(['git', 'filter-branch', '-f', '--subdirectory-filter', 'easybuild/'+ebPart , k])
-			subprocess.check_call(['git', 'checkout', 'master'])
-			subprocess.check_call(['git', 'submodule', 'add', '-b', k, './', k])
-			subprocess.check_call(['git', 'branch', '-D', k])
-			# We remove the local remote
-			os.chdir(os.path.join(tmp, k))
-			subprocess.check_call(['git', 'remote', 'remove', 'origin'])
-			os.chdir(tmp)
-			subprocess.check_call(['git', 'commit', '-m' , "'Adding "+k+"'"])
+	if any(True for x in ['easybuild-framework', 'easybuild-easyblocks', 'easybuild-easyconfigs'] if not x in altSources):
+		# We complete the EasyBuild files with the ones from the subtree if necessary
+		subprocess.check_call(['git', 'remote', 'add', '-f', 'install-resif', hashTable['srcpath']])
+	
+		for k in ['easybuild-framework', 'easybuild-easyblocks', 'easybuild-easyconfigs']:
+			if not k in altSources:
+				ebPart = re.search("[^-]*$", k).group(0)
+				if hashTable['release'] != 'HEAD':
+					subprocess.check_call(['git', 'checkout', 'install-resif/'+hashTable['branch'], '-b', k])
+				elif 'branch' in hashTable:
+					subprocess.check_call(['git', 'checkout', hashTable['release'], '-b', k])
+				else:
+					subprocess.check_call(['git', 'checkout', 'FETCH_HEAD', '-b', k])
+				subprocess.check_call(['git', 'filter-branch', '-f', '--subdirectory-filter', 'easybuild/'+ebPart , k])
+				subprocess.check_call(['git', 'checkout', 'master'])
+				subprocess.check_call(['git', 'submodule', 'add', '-b', k, './', k])
+				subprocess.check_call(['git', 'branch', '-D', k])
+				# We remove the local remote
+				os.chdir(os.path.join(tmp, k))
+				subprocess.check_call(['git', 'remote', 'remove', 'origin'])
+				os.chdir(tmp)
+				subprocess.check_call(['git', 'commit', '-m' , "'Adding "+k+"'"])
 
 	# We remove the remote when finished, clean the repository and commit the final state.
 	subprocess.check_call(['git', 'rm', 'temp'])
