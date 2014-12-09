@@ -1,0 +1,6 @@
+core:
+  - bzip2-1.0.6.eb
+ulhpc:
+  - GCC-4.9.1.eb
+truc:
+  - bzip2-1.0.6.eb
