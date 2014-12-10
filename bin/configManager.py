@@ -34,6 +34,10 @@ def generateBootstrapConfig(hashTable):
 
     # Create the configuration file for EasyBuild.
     easybuildConfigfileCreator(config)
+
+    # If the swset field is empty (occurs when using the command as a user), we set it to core
+    if not 'swsets' in config:
+        config['swsets'] = 'core'
     
     return config
 
@@ -167,16 +171,16 @@ def generateCommonConfig(hashTable):
             userConfig['srcpath'] = '$HOME/.resif/src'
 
     try:
-        repo = Repo(hashTable['srcpath'])
+        repo = Repo(userConfig['srcpath'])
     except Exception:
-        sys.exit("Invalid git repository at " + hashTable['srcpath'])
+        sys.exit("Invalid git repository at " + userConfig['srcpath'])
 
     # If a a branch or a release has been given, we change the state of the repository accordingly, if not, we use the production branch
     if 'release' in userConfig or 'branch' in userConfig:
         if 'release' in userConfig:
-            tree = repo.commit(hashTable['release']).tree
+            tree = repo.commit(userConfig['release']).tree
         else:
-            tree = repo.heads[hashTable['branch']].commit.tree
+            tree = repo.heads[userConfig['branch']].commit.tree
     else:
         tree = repo.commit('HEAD').tree
 
