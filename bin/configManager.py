@@ -154,7 +154,7 @@ def generateCommonConfig(hashTable):
     # If the the "srcpath" key has not been defined in the dict through one of the previous ways, we assume that it has its default value
     if not "srcpath" in userConfig:
         if userConfig['role'] == 'admin':
-            userConfig['srcpath'] = '$HOME/resif'
+            userConfig['srcpath'] = '$HOME/.resif/src'
         else:
             userConfig['srcpath'] = '$HOME/.resif/src'
 
