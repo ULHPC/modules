@@ -167,16 +167,16 @@ def generateCommonConfig(hashTable):
             userConfig['srcpath'] = '$HOME/.resif/src'
 
     try:
-        repo = Repo(hashTable['srcpath'])
+        repo = Repo(userConfig['srcpath'])
     except Exception:
-        sys.exit("Invalid git repository at " + hashTable['srcpath'])
+        sys.exit("Invalid git repository at " + userConfig['srcpath'])
 
     # If a a branch or a release has been given, we change the state of the repository accordingly, if not, we use the production branch
     if 'release' in userConfig or 'branch' in userConfig:
         if 'release' in userConfig:
-            tree = repo.commit(hashTable['release']).tree
+            tree = repo.commit(userConfig['release']).tree
         else:
-            tree = repo.heads[hashTable['branch']].commit.tree
+            tree = repo.heads[userConfig['branch']].commit.tree
     else:
         tree = repo.commit('HEAD').tree
 
