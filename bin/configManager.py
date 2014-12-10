@@ -48,6 +48,10 @@ def generateBuildConfig(hashTable):
     if not 'swsets_config' in config:
         generateSwsetsConfig(config)
 
+    # If no swset is given, the script stops
+    if not 'swsets' in config:
+        sys.exit('Please specify at least one software set you want to build.\n')
+
     return config
 
 
@@ -74,6 +78,10 @@ def generateCleaninstallConfig(hashTable):
     # If no file has been given to describe the swsets, we use the default one
     if not 'swsets_config' in config:
         generateSwsetsConfig(config)
+
+    # If no swset is given, the script stops
+    if not 'swsets' in config:
+        sys.exit('Please specify at least one software set you want to build.\n')
 
     return config
 
