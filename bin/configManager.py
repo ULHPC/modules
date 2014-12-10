@@ -12,8 +12,6 @@ import re
 import subprocess
 from git import Repo
 
-import click
-
 #######################################################################################################################
 # This functions are wrapper to make the code more readable.
 # They shouldn't do much more than calling the bellow functions.
@@ -160,40 +158,21 @@ def generateCommonConfig(hashTable):
         else:
             userConfig['srcpath'] = '$HOME/.resif/src'
 
+    try:
+        repo = Repo(hashTable['srcpath'])
+    except Exception:
+        sys.exit("Invalid git repository at " + hashTable['srcpath'])
 
-    # TODO: Go to a git repo object and pass it to the config ? Make sure we don't mess with the user directory and make sure that we don't use any changed files from the user too.
-    # (Or at least force him to commit these changes, avoiding unvoluntary changes)
-    # Solves the problem of the dirty state too.
-    try: #repo
-        repo = Repo(hashTable['srcpath']) #repo
-    except Exception: #repo
-        sys.exit("Invalid git repository at " + hashTable['srcpath']) #repo
- #repo
-    # If a a branch or a release has been given, we change the state of the repository accordingly, if not, we use the production branch #repo
-    if 'release' in userConfig or 'branch' in userConfig: #repo
-        if 'release' in userConfig: #repo
-            tree = repo.commit(hashTable['release']).tree #repo
-        else: #repo
-            tree = repo.heads[hashTable['branch']].commit.tree #repo
-    else: #repo
-        tree = repo.commit('HEAD').tree #repo
-
-    #repo  If a a branch or a release has been given, we change the state of the repository accordingly, if not, we use the production branch
-    #repo  IMPORTANT: won't work if there are uncommited changes in the current branch (git refuses to checkout then 
-    #repo  and I don't plan on forcing the checkout to avoid unexpected loss of data)
-    #repo if 'release' in userConfig or 'branch' in userConfig:
-    #repo     workdir = os.getcwd()
-    #repo     os.chdir(userConfig['srcpath'])
-    #repo     if 'release' in userConfig:
-    #repo         subprocess.check_call(['git', 'checkout', userConfig['release']])
-    #repo     else:
-    #repo         subprocess.check_call(['git', 'checkout', userConfig['branch']])
-    #repo     os.chdir(workdir)
-    #repo else:
-    #repo     subprocess.check_call(['git', 'checkout', 'production'])
+    # If a a branch or a release has been given, we change the state of the repository accordingly, if not, we use the production branch
+    if 'release' in userConfig or 'branch' in userConfig:
+        if 'release' in userConfig:
+            tree = repo.commit(hashTable['release']).tree
+        else:
+            tree = repo.heads[hashTable['branch']].commit.tree
+    else:
+        tree = repo.commit('HEAD').tree
 
     # We load the default config file and use it to complete the configuration given by the user
-    #repo defaultConfigFile = os.path.join(os.getcwd(), os.path.expandvars(userConfig['srcpath']) + '/config/config-'+userConfig['role']+'.yaml')
     defaultConfigFile = tree['config/config-'+userConfig['role']+'.yaml'].data_stream.read()
     config = configParser(defaultConfigFile)
     configMerger(config, userConfig)
@@ -208,20 +187,14 @@ def generateCommonConfig(hashTable):
     expandMNS(config)
 
     # Adding the repo and the tree to the config
-    config['git_repo'] = repo #repo
-    config['git_tree'] = tree #repo
+    config['git_repo'] = repo
+    config['git_tree'] = tree
 
     return config
 
 
 # Generate a value for the releasedir field of the dict.
 def generateReleasedir(hashTable):
-	#repo # First, we create the repo object
-    #repo try:
-    #repo     repo = Repo(hashTable['srcpath'])
-    #repo except Exception:
-    #repo     sys.exit("Invalid git repository at " + hashTable['srcpath'])
-
     # If we build the HEAD of a branch, we have to find out which branch it is
     if hashTable['release'] == 'HEAD':
         # if a branch is provided, we use it
@@ -240,7 +213,7 @@ def generateReleasedir(hashTable):
         # But if we were provided a branch, if the branch really is the branch of the release, we wil build in the corresponding <branch> directory
         if 'branch' in hashTable:
             branch = hashTable['branch']
-            tree = hashTable['git_repo'].commit(hashTable['release']).tree #repo
+            tree = hashTable['git_repo'].commit(hashTable['release']).tree
             # If the branch given isn't the same as the branch of the given release, we don't go any further
             commitBranches = subprocess.check_output(['git', 'branch', '--contains', hashTable['release']]).split("\n")
             if not any(True for line in commitBranches if re.search("[^\s]*$", line).group(0) == branch):
@@ -252,8 +225,8 @@ def generateReleasedir(hashTable):
         else:
             tagRegex = 'v?[0-9]*\.[0-9]*\.[0-9]*'
             branch = 'tag'
-            # VERSION-tag/SHA1
-            tree = hashTable['git_repo'].commit(hashTable['release']).tree #repo
+            # VERSION-{tag, SHA1}
+            tree = hashTable['git_repo'].commit(hashTable['release']).tree
             release = tree['VERSION'].data_stream.read().splitlines()[0]
             if re.match(tagRegex, hashTable['release']):
                 hashTable['releasedir'] = os.path.join(branch, 'v' + release + '-' + hashTable['release'])

@@ -186,7 +186,6 @@ prepend-path    PYTHONPATH      \"$root/easybuild-easyconfigs\"\n\
 	os.symlink(moduleFilePath, symlinkPath)
 
 
-# TODO: Go to using repo instead of direct file access from the directory
 # Install the ThematicMNS module naming scheme.
 def setThematicMNS(hashTable):
 	mnsroot = os.path.join(os.path.join('.installRef', 'MNS'), 'easybuild')
@@ -206,8 +205,6 @@ __path__ = extend_path(__path__, __name__)\n\
 		os.path.join(os.path.join(hashTable['rootinstall'], mnsroot), '__init__.py'))
 
 	# Import the module naming scheme
-	#repo shutil.copyfile(os.path.join(os.path.join(hashTable['srcpath'], 'bin'), 'ThematicMNS.py'), \
-	#repo	os.path.join(mnsPath, 'ThematicMNS.py'))
 	thematicStr = hashTable['git_tree']['bin/ThematicMNS.py'].data_stream.read()
 	with open(os.path.join(mnsPath, 'ThematicMNS.py'), 'w') as f:
 		f.write(thematicStr)
