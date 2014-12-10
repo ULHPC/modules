@@ -165,10 +165,7 @@ def generateCommonConfig(hashTable):
 
     # If the the "srcpath" key has not been defined in the dict through one of the previous ways, we assume that it has its default value
     if not "srcpath" in userConfig:
-        if userConfig['role'] == 'admin':
-            userConfig['srcpath'] = '$HOME/.resif/src'
-        else:
-            userConfig['srcpath'] = '$HOME/.resif/src'
+        userConfig['srcpath'] = '$HOME/.resif/src'
 
     try:
         repo = Repo(userConfig['srcpath'])
@@ -185,7 +182,7 @@ def generateCommonConfig(hashTable):
         tree = repo.commit('HEAD').tree
 
     # We load the default config file and use it to complete the configuration given by the user
-    defaultConfigFile = tree['config/config-'+userConfig['role']+'.yaml'].data_stream.read()
+    defaultConfigFile = tree['config/config.yaml'].data_stream.read()
     config = configParser(defaultConfigFile)
     configMerger(config, userConfig)
 
@@ -291,31 +288,25 @@ def easybuildConfigfileCreator(hashTable):
     repository = 'FileRepository'
     logfile_format = ('easylog', 'easybuild-%(name)s-%(version)s-%(date)s.%(time)s.log')
 
-    if hashTable['role'] == 'admin':
-        ebdirsAdmin = os.path.join(hashTable['rootinstall'], '.ebdirs') # <rootinstall>/.ebdirs
-        sourcepathAdmin = os.path.join(ebdirsAdmin, 'sources') # <rootinstall>/.ebdirs/sources
-        buildpathAdmin = os.path.join(ebdirsAdmin, 'build') # <rootinstall>/.ebdirs/build
-        repositorypathAdmin = os.path.join(ebdirsAdmin, 'eb_repo') # <rootinstall>/.ebdirs/eb_repo
+    ebdirsAdmin = os.path.join(hashTable['rootinstall'], '.ebdirs') # <rootinstall>/.ebdirs
+    sourcepathAdmin = os.path.join(ebdirsAdmin, 'sources') # <rootinstall>/.ebdirs/sources
+    buildpathAdmin = os.path.join(ebdirsAdmin, 'build') # <rootinstall>/.ebdirs/build
+    repositorypathAdmin = os.path.join(ebdirsAdmin, 'eb_repo') # <rootinstall>/.ebdirs/eb_repo
 
-        ebdirsUser = os.path.join(os.path.join('$HOME' ,'.resif'), trueVersion) # $HOME/.resif/vx.y-YYYYMMDD/
-        sourcepathUser = os.path.join(ebdirsUser, 'sources') # $HOME/.resif/vx.y-YYYYMMDD/sources
-        buildpathUser = os.path.join(ebdirsUser, 'build') # $HOME/.resif/vx.y-YYYYMMDD/build
-        repositorypathUser = os.path.join(ebdirsUser, 'eb_repo') # $HOME/.resif/vx.y-YYYYMMDD/eb_repo
-    
-        with open(os.path.join(path, 'easybuild-admin.cfg'), 'w') as f:
-            f.write('[config]\n')
-            f.write('sourcepath = ' + sourcepathAdmin + '\n')
-            f.write('buildpath = ' + buildpathAdmin + '\n')
-            f.write('repository = ' + repository + '\n')
-            f.write('repositorypath = ' + repositorypathAdmin + '\n')
-            f.write('module-naming-scheme = ' + hashTable['mns'] +'\n')
-            # Currenctly, this option isn't working (EasyBuild 1.15.2) so we don't use it until it is fixed.
-            f.write('#logfile-format = ' + logfile_format[0] + ',' + logfile_format[1] + '\n')
-    else:
-        ebdirsUser = os.path.join(hashTable['rootinstall'], '.ebdirs') # <rootinstall>/.ebdirs
-        sourcepathUser = os.path.join(ebdirsUser, 'sources') # <rootinstall>/.ebdirs/sources
-        buildpathUser = os.path.join(ebdirsUser, 'build') # <rootinstall>/.ebdirs/build
-        repositorypathUser = os.path.join(ebdirsUser, 'eb_repo') # <rootinstall>/.ebdirs/eb_repo
+    ebdirsUser = os.path.join(os.path.join('$HOME' ,'.resif'), trueVersion) # $HOME/.resif/vx.y-YYYYMMDD/
+    sourcepathUser = os.path.join(ebdirsUser, 'sources') # $HOME/.resif/vx.y-YYYYMMDD/sources
+    buildpathUser = os.path.join(ebdirsUser, 'build') # $HOME/.resif/vx.y-YYYYMMDD/build
+    repositorypathUser = os.path.join(ebdirsUser, 'eb_repo') # $HOME/.resif/vx.y-YYYYMMDD/eb_repo
+
+    with open(os.path.join(path, 'easybuild-admin.cfg'), 'w') as f:
+        f.write('[config]\n')
+        f.write('sourcepath = ' + sourcepathAdmin + '\n')
+        f.write('buildpath = ' + buildpathAdmin + '\n')
+        f.write('repository = ' + repository + '\n')
+        f.write('repositorypath = ' + repositorypathAdmin + '\n')
+        f.write('module-naming-scheme = ' + hashTable['mns'] +'\n')
+        # Currenctly, this option isn't working (EasyBuild 1.15.2) so we don't use it until it is fixed.
+        f.write('#logfile-format = ' + logfile_format[0] + ',' + logfile_format[1] + '\n')
 
     with open(os.path.join(path, 'easybuild-user.cfg'), 'w') as f:
         f.write('[config]\n')

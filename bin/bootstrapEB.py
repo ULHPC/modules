@@ -225,21 +225,20 @@ def sourcefileCreator(hashTable):
 	if not 'core' in hashTable['swsets']:
 		modulePath += os.path.join(os.path.join(os.path.join(hashTable['rootinstall'], 'core'), 'modules'), 'base') + ":"
 
-	# If we have the admin role, we create two files to source, one for the admin and another one for the cluster users.
-	if hashTable['role'] == "admin":
-		# By default, we don't install in core but in ulhpc
-		sourcepathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'sources') # "<rootinstall>/.ebdirs/sources"
-		buildpathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'build') # "<rootinstall>/.ebdirs/build"
-		installpathAdmin = os.path.join(hashTable['rootinstall'], 'ulhpc')
-		repositorypathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'eb_repo') # "<rootinstall>/.ebdirs/eb_repo"
+	# We create the files to source to use the infrastructure.
+	# By default, we don't install in core but in ulhpc
+	sourcepathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'sources') # "<rootinstall>/.ebdirs/sources"
+	buildpathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'build') # "<rootinstall>/.ebdirs/build"
+	installpathAdmin = os.path.join(hashTable['rootinstall'], 'ulhpc') # <rootinstall>/ulhpc
+	repositorypathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'eb_repo') # "<rootinstall>/.ebdirs/eb_repo"
 
-		sourcepathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'sources') # "$HOME/.resif/vx.y-YYYYMMDD/sources"
-		buildpathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'build') # "$HOME/.resif/vx.y-YYYYMMDD/build"
-		installpathUser = os.path.join(os.path.join("$HOME", ".resif"), trueVersion) # "$HOME/.resif/vx.y-YYYYMMDD"
-		repositorypathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'eb_repo') # "$HOME/.resif/vx.y-YYYYMMDD/eb_repo"
-		# The admin file is there to easily add software in the ulhpc swset without any manual changes to the config.
-		with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-admin.sh"), "w") as f:
-			f.write("\
+	sourcepathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'sources') # "$HOME/.resif/vx.y-YYYYMMDD/sources"
+	buildpathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'build') # "$HOME/.resif/vx.y-YYYYMMDD/build"
+	installpathUser = os.path.join(os.path.join("$HOME", ".resif"), trueVersion) # "$HOME/.resif/vx.y-YYYYMMDD"
+	repositorypathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'eb_repo') # "$HOME/.resif/vx.y-YYYYMMDD/eb_repo"
+	# The admin file is there to easily add software in the ulhpc swset without any manual changes to the config.
+	with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-admin.sh"), "w") as f:
+		f.write("\
 export EASYBUILD_SOURCEPATH=" + sourcepathAdmin + "\n\
 export EASYBUILD_BUILDPATH=" + buildpathAdmin + "\n\
 export EASYBUILD_INSTALLPATH=" + installpathAdmin + "\n\
@@ -252,9 +251,9 @@ export EASYBUILD_LOGFILE_FORMAT=(\"easybuild\", \"easybuild-%(name)s-%(version)s
 export EASYBUILD_MODULE_NAMING_SCHEME=" + hashTable['mns'] + "\n\
 export RESIF_ROOTINSTALL=" + hashTable['rootinstall'] + "\n\
 ")
-		# The user file is there to easily add software locally without any manual change to the config.
-		with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-user.sh"), "w") as f:
-			f.write("\
+	# The user file is there to easily add software locally without any manual change to the config.
+	with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-user.sh"), "w") as f:
+		f.write("\
 export EASYBUILD_SOURCEPATH=" + sourcepathUser + "\n\
 export EASYBUILD_BUILDPATH=" + buildpathUser + "\n\
 export EASYBUILD_INSTALLPATH=" + installpathUser + "\n\
@@ -267,27 +266,7 @@ export EASYBUILD_LOGFILE_FORMAT=(\"easybuild\", \"easybuild-%(name)s-%(version)s
 export EASYBUILD_MODULE_NAMING_SCHEME=" + hashTable['mns'] + "\n\
 export RESIF_ROOTINSTALL=" + hashTable['rootinstall'] + "\n\
 ")
-
-	# If we have the user role, we only create one file to source, this configuration being meant for only one user.
-	else:
-		sourcepathUser = os.path.join(os.path.join(hashTable['rootinstall'], '.ebdirs'), 'sources') # "<rootinstall>/.ebdirs/sources"
-		buildpathUser = os.path.join(os.path.join(hashTable['rootinstall'], '.ebdirs'), 'build') # "<rootinstall>/.ebdirs/build"
-		installpathUser = os.path.join(hashTable['rootinstall'], 'core') # "<rootinstall>/.ebdirs"
-		repositorypathUser = os.path.join(os.path.join(hashTable['rootinstall'], '.ebdirs'), 'eb_repo') # "<rootinstall>/.ebdirs/eb_repo"
-		with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + ".sh"), "w") as f:
-			f.write("\
-export EASYBUILD_SOURCEPATH=" + sourcepathUser + "\n\
-export EASYBUILD_BUILDPATH=" + buildpathUser + "\n\
-export EASYBUILD_INSTALLPATH=" + installpathUser + "\n\
-export MODULEPATH=" + modulePath + "\n\
-export EASYBUILD_REPOSITORY=FileRepository\n\
-export EASYBUILD_REPOSITORYPATH=" + repositorypathUser + "\n\
-export EASYBUILD_LOGFILE_FORMAT=(\"easybuild\", \"easybuild-%(name)s-%(version)s-%(date)s.%(time)s.log\")\n\
-# Currently, we continue to use environment-modules. We'll switch to Lmod later\n\
-#export EASYBUILD_MODULES_TOOL=Lmod\n\
-export EASYBUILD_MODULE_NAMING_SCHEME=" + hashTable['mns'] + "\n\
-export RESIF_ROOTINSTALL=" + hashTable['rootinstall'] + "\n\
-")
+	
 	return modulePath
 
 #######################################################################################################################
