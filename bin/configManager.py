@@ -138,10 +138,11 @@ def configExpandVars(hashTable):
         if isinstance(v, tuple):
             tup = ()
             for s in v:
-                tup += (os.path.expandvars(s),)
+                if isinstance(s, basestring):
+                    tup += (os.path.expandvars(s),)
             hashTable[k] = tup
         else:
-            if v != None:
+            if v != None and isinstance(v, basestring):
                 hashTable[k] = os.path.expandvars(v)
 
 #######################################################################################################################
