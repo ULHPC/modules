@@ -100,10 +100,11 @@ def encoder(hashTable, encoding):
         if isinstance(v, tuple):
             x = ()
             for s in v:
-                x += (s.encode(encoding),)
+                if isinstance(s, basestring):
+                    x += (s.encode(encoding),)
             hashTable[k] = x
         else:
-            if v != None:
+            if v != None and isinstance(v, basestring):
                 hashTable[k] = v.encode(encoding)
     return hashTable
 
