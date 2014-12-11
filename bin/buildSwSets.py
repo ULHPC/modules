@@ -88,10 +88,10 @@ def defineSharedOptions(hashTable):
 
     # If this file doesn't exist, it wont crash, EasyBuild will just ignore it and use other sources for the 
     # options (default config file and so on).
-    if 'admin' in hashTable and hashTable['admin']:
-        easybuild_config = os.path.join(os.path.join(hashTable['srcpath'], 'config'), 'easybuild-admin.cfg')
+    if 'out_place' in hashTable and hashTable['out_place']:
+        easybuild_config = os.path.join(os.path.join(hashTable['srcpath'], 'config'), 'easybuild-out-place.cfg')
     else:
-        easybuild_config = os.path.join(os.path.join(hashTable['srcpath'], 'config'), 'easybuild-user.cfg')
+        easybuild_config = os.path.join(os.path.join(hashTable['srcpath'], 'config'), 'easybuild.cfg')
     options += ' --configfile=' + easybuild_config
 
     return options

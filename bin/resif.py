@@ -20,8 +20,7 @@ def resif():
     """
     RESIF commandline interface.
 
-    To use this software, first choose between the 'admin' or the 'user' command,
-    depending on your role and what you want to do.
+    Choose the sub-command you want to execute.
     """
     pass
 
@@ -82,7 +81,7 @@ def bootstrap(**kwargs):
 @click.option('--eb-repositorypath', 'eb_repositorypath', envvar='EASYBUILD_REPOSITORYPATH', help='EasyBuild path to the repository for successuflly installed easyconfig files.')
 @click.option('--buildmode', envvar='RESIF_BUILDMODE', type=click.Choice(['local', 'job']), help='Mode to build the software: either building locally or in a job.')
 @click.option('--mns', envvar='EASYBUILD_MODULE_NAMING_SCHEME', type=click.Choice(['EasyBuildMNS', 'E', 'HierarchicalMNS', 'H', 'ThematicMNS', 'T']), help='Module Naming Scheme to be used.')
-@click.option('--admin', 'admin', flag_value=True, envvar='RESIF_ADMIN', help='Set this option if you want all the files (sources, build, repository) to be put inside the rootinstall. (Admin mode)')
+@click.option('--out-place', 'out_place', flag_value=True, envvar='RESIF_ON_PLACE', help='Set this option if you want all the files (sources, build, repository) to be put outside the rootinstall (in an associated subdirectory in $HOME/.resif).')
 @click.option('--swsets-config', 'swsets_config', envvar='RESIF_SWSETS_CONFIG', help='Path to a file defining the software sets.')
 @click.argument('swsets', nargs=-1)
 def build(**kwargs):

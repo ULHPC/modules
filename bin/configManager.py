@@ -34,10 +34,6 @@ def generateBootstrapConfig(hashTable):
 
     # Create the configuration file for EasyBuild.
     easybuildConfigfileCreator(config)
-
-    # If the swset field is empty (occurs when using the command as a user), we set it to core
-    if not 'swsets' in config:
-        config['swsets'] = 'core'
     
     return config
 
@@ -86,6 +82,9 @@ def generateCleaninstallConfig(hashTable):
     # If no swset is given, the script stops
     if not 'swsets' in config:
         sys.exit('Please specify at least one software set you want to build.\n')
+
+    # For the build to install everything inside the rootinstall, we set out_place to False
+    config['out_place'] = False
 
     return config
 
@@ -288,32 +287,32 @@ def easybuildConfigfileCreator(hashTable):
     repository = 'FileRepository'
     logfile_format = ('easylog', 'easybuild-%(name)s-%(version)s-%(date)s.%(time)s.log')
 
-    ebdirsAdmin = os.path.join(hashTable['rootinstall'], '.ebdirs') # <rootinstall>/.ebdirs
-    sourcepathAdmin = os.path.join(ebdirsAdmin, 'sources') # <rootinstall>/.ebdirs/sources
-    buildpathAdmin = os.path.join(ebdirsAdmin, 'build') # <rootinstall>/.ebdirs/build
-    repositorypathAdmin = os.path.join(ebdirsAdmin, 'eb_repo') # <rootinstall>/.ebdirs/eb_repo
+    ebdirsOnPlace = os.path.join(hashTable['rootinstall'], '.ebdirs') # <rootinstall>/.ebdirs
+    sourcepathOnPlace = os.path.join(ebdirsOnPlace, 'sources') # <rootinstall>/.ebdirs/sources
+    buildpathOnPlace = os.path.join(ebdirsOnPlace, 'build') # <rootinstall>/.ebdirs/build
+    repositorypathOnPlace = os.path.join(ebdirsOnPlace, 'eb_repo') # <rootinstall>/.ebdirs/eb_repo
 
-    ebdirsUser = os.path.join(os.path.join('$HOME' ,'.resif'), trueVersion) # $HOME/.resif/vx.y-YYYYMMDD/
-    sourcepathUser = os.path.join(ebdirsUser, 'sources') # $HOME/.resif/vx.y-YYYYMMDD/sources
-    buildpathUser = os.path.join(ebdirsUser, 'build') # $HOME/.resif/vx.y-YYYYMMDD/build
-    repositorypathUser = os.path.join(ebdirsUser, 'eb_repo') # $HOME/.resif/vx.y-YYYYMMDD/eb_repo
+    ebdirsOutPlace = os.path.join(os.path.join('$HOME' ,'.resif'), trueVersion) # $HOME/.resif/vx.y-YYYYMMDD/
+    sourcepathOutPlace = os.path.join(ebdirsOutPlace, 'sources') # $HOME/.resif/vx.y-YYYYMMDD/sources
+    buildpathOutPlace = os.path.join(ebdirsOutPlace, 'build') # $HOME/.resif/vx.y-YYYYMMDD/build
+    repositorypathOutPlace = os.path.join(ebdirsOutPlace, 'eb_repo') # $HOME/.resif/vx.y-YYYYMMDD/eb_repo
 
-    with open(os.path.join(path, 'easybuild-admin.cfg'), 'w') as f:
+    with open(os.path.join(path, 'easybuild.cfg'), 'w') as f:
         f.write('[config]\n')
-        f.write('sourcepath = ' + sourcepathAdmin + '\n')
-        f.write('buildpath = ' + buildpathAdmin + '\n')
+        f.write('sourcepath = ' + sourcepathOnPlace + '\n')
+        f.write('buildpath = ' + buildpathOnPlace + '\n')
         f.write('repository = ' + repository + '\n')
-        f.write('repositorypath = ' + repositorypathAdmin + '\n')
+        f.write('repositorypath = ' + repositorypathOnPlace + '\n')
         f.write('module-naming-scheme = ' + hashTable['mns'] +'\n')
         # Currenctly, this option isn't working (EasyBuild 1.15.2) so we don't use it until it is fixed.
         f.write('#logfile-format = ' + logfile_format[0] + ',' + logfile_format[1] + '\n')
 
-    with open(os.path.join(path, 'easybuild-user.cfg'), 'w') as f:
+    with open(os.path.join(path, 'easybuild-out-place.cfg'), 'w') as f:
         f.write('[config]\n')
-        f.write('sourcepath = ' + sourcepathUser + '\n')
-        f.write('buildpath = ' + buildpathUser + '\n')
+        f.write('sourcepath = ' + sourcepathOutPlace + '\n')
+        f.write('buildpath = ' + buildpathOutPlace + '\n')
         f.write('repository = ' + repository + '\n')
-        f.write('repositorypath = ' + repositorypathUser + '\n')
+        f.write('repositorypath = ' + repositorypathOutPlace + '\n')
         f.write('module-naming-scheme = ' + hashTable['mns'] +'\n')
         # Currenctly, this option isn't working (EasyBuild 1.15.2) so we don't use it until it is fixed.
         f.write('#logfile-format = ' + logfile_format[0] + ',' + logfile_format[1] + '\n')

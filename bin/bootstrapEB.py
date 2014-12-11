@@ -227,24 +227,24 @@ def sourcefileCreator(hashTable):
 
 	# We create the files to source to use the infrastructure.
 	# By default, we don't install in core but in ulhpc
-	sourcepathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'sources') # "<rootinstall>/.ebdirs/sources"
-	buildpathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'build') # "<rootinstall>/.ebdirs/build"
-	installpathAdmin = os.path.join(hashTable['rootinstall'], 'ulhpc') # <rootinstall>/ulhpc
-	repositorypathAdmin = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'eb_repo') # "<rootinstall>/.ebdirs/eb_repo"
+	sourcepathOnPlace = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'sources') # "<rootinstall>/.ebdirs/sources"
+	buildpathOnPlace = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'build') # "<rootinstall>/.ebdirs/build"
+	installpathOnPlace = os.path.join(hashTable['rootinstall'], 'ulhpc') # <rootinstall>/ulhpc
+	repositorypathOnPlace = os.path.join(os.path.join(hashTable['rootinstall'], ".ebdirs"), 'eb_repo') # "<rootinstall>/.ebdirs/eb_repo"
 
-	sourcepathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'sources') # "$HOME/.resif/vx.y-YYYYMMDD/sources"
-	buildpathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'build') # "$HOME/.resif/vx.y-YYYYMMDD/build"
-	installpathUser = os.path.join(os.path.join("$HOME", ".resif"), trueVersion) # "$HOME/.resif/vx.y-YYYYMMDD"
-	repositorypathUser = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'eb_repo') # "$HOME/.resif/vx.y-YYYYMMDD/eb_repo"
+	sourcepathOutPlace = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'sources') # "$HOME/.resif/vx.y-YYYYMMDD/sources"
+	buildpathOutPlace = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'build') # "$HOME/.resif/vx.y-YYYYMMDD/build"
+	installpathOutPlace = os.path.join(os.path.join("$HOME", ".resif"), trueVersion) # "$HOME/.resif/vx.y-YYYYMMDD"
+	repositorypathOutPlace = os.path.join(os.path.join(os.path.join("$HOME", ".resif"), trueVersion), 'eb_repo') # "$HOME/.resif/vx.y-YYYYMMDD/eb_repo"
 	# The admin file is there to easily add software in the ulhpc swset without any manual changes to the config.
-	with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-admin.sh"), "w") as f:
+	with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + ".sh"), "w") as f:
 		f.write("\
-export EASYBUILD_SOURCEPATH=" + sourcepathAdmin + "\n\
-export EASYBUILD_BUILDPATH=" + buildpathAdmin + "\n\
-export EASYBUILD_INSTALLPATH=" + installpathAdmin + "\n\
+export EASYBUILD_SOURCEPATH=" + sourcepathOnPlace + "\n\
+export EASYBUILD_BUILDPATH=" + buildpathOnPlace + "\n\
+export EASYBUILD_INSTALLPATH=" + installpathOnPlace + "\n\
 export MODULEPATH=" + modulePath + "\n\
 export EASYBUILD_REPOSITORY=FileRepository\n\
-export EASYBUILD_REPOSITORYPATH=" + repositorypathAdmin + "\n\
+export EASYBUILD_REPOSITORYPATH=" + repositorypathOnPlace + "\n\
 export EASYBUILD_LOGFILE_FORMAT=(\"easybuild\", \"easybuild-%(name)s-%(version)s-%(date)s.%(time)s.log\")\n\
 # Currently, we continue to use environment-modules. We'll switch to Lmod later\n\
 #export EASYBUILD_MODULES_TOOL=Lmod\n\
@@ -252,14 +252,14 @@ export EASYBUILD_MODULE_NAMING_SCHEME=" + hashTable['mns'] + "\n\
 export RESIF_ROOTINSTALL=" + hashTable['rootinstall'] + "\n\
 ")
 	# The user file is there to easily add software locally without any manual change to the config.
-	with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-user.sh"), "w") as f:
+	with open(os.path.join(hashTable['rootinstall'], "LOADME-" + trueVersion + "-out-place.sh"), "w") as f:
 		f.write("\
-export EASYBUILD_SOURCEPATH=" + sourcepathUser + "\n\
-export EASYBUILD_BUILDPATH=" + buildpathUser + "\n\
-export EASYBUILD_INSTALLPATH=" + installpathUser + "\n\
+export EASYBUILD_SOURCEPATH=" + sourcepathOutPlace + "\n\
+export EASYBUILD_BUILDPATH=" + buildpathOutPlace + "\n\
+export EASYBUILD_INSTALLPATH=" + installpathOutPlace + "\n\
 export MODULEPATH=" + modulePath + "\n\
 export EASYBUILD_REPOSITORY=FileRepository\n\
-export EASYBUILD_REPOSITORYPATH=" + repositorypathUser + "\n\
+export EASYBUILD_REPOSITORYPATH=" + repositorypathOutPlace + "\n\
 export EASYBUILD_LOGFILE_FORMAT=(\"easybuild\", \"easybuild-%(name)s-%(version)s-%(date)s.%(time)s.log\")\n\
 # Currently, we continue to use environment-modules. We'll switch to Lmod later\n\
 #export EASYBUILD_MODULES_TOOL=Lmod\n\
