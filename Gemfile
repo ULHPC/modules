@@ -1,5 +1,6 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem 'falkorlib'
+gem 'falkorlib' #, :path => '~/git/github.com/Falkor/falkorlib'
+
 
