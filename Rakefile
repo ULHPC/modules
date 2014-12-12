@@ -1,6 +1,6 @@
 ##############################################################################
 # Rakefile - Configuration file for rake (http://rake.rubyforge.org/)
-# Time-stamp: <Ven 2014-12-12 18:02 svarrette>
+# Time-stamp: <Ven 2014-12-12 18:03 svarrette>
 #
 # Copyright (c) 2014 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 # .             http://varrette.gforge.uni.lu
@@ -42,11 +42,11 @@ end
 
 # Configure the git submodules
 FalkorLib.config.git do |c|
-  #   c[:submodules] = {
-  #       'Makefiles' => {
-  #           :url    => 'https://github.com/Falkor/Makefiles'
-  #       }
-  # }
+    c[:submodules] = {
+        'Makefiles' => {
+            :url    => 'https://github.com/Falkor/Makefiles'
+        }
+  }
   c[:subtrees] = {
     'easybuild/framework' => {
       :url    => 'https://github.com/ULHPC/easybuild-framework.git',
