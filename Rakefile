@@ -1,6 +1,6 @@
 ##############################################################################
 # Rakefile - Configuration file for rake (http://rake.rubyforge.org/)
-# Time-stamp: <Ven 2014-12-12 18:18 svarrette>
+# Time-stamp: <Ven 2014-12-12 18:19 svarrette>
 #
 # Copyright (c) 2014 Sebastien Varrette <Sebastien.Varrette@uni.lu>
 # .             http://varrette.gforge.uni.lu
@@ -61,9 +61,9 @@ FalkorLib.config.git do |c|
       :url    => 'https://github.com/ULHPC/easybuild-easyconfigs.git',
       :branch => 'uni.lu'
     },
-    'easybuild/wiki' => {
-      :url    => 'https://github.com/hpcugent/easybuild-wiki.git',
-    },
+    # 'easybuild/wiki' => {
+    #   :url    => 'https://github.com/hpcugent/easybuild-wiki.git',
+    # },
   }
 end
 
