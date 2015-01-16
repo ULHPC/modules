@@ -4,7 +4,7 @@
 core:
   - ABINIT-7.2.1-x86_64_linux_gnu4.5.eb
   - ABySS-1.3.4-ictce-5.3.0-Python-2.7.3.eb
-  - ABySS-1.3.4-goolf-1.4.10-Python-2.7.3.eb
+  - ABySS-1.3.6-goolf-1.4.10-Python-2.7.5.eb
   - ASE-3.6.0.2515-ictce-5.3.0-Python-2.7.3.eb
   - ASE-3.6.0.2515-goolf-1.4.10-Python-2.7.3.eb
   - Autoconf-2.69-goolf-1.4.10.eb
@@ -13,12 +13,13 @@ core:
   - Automake-1.14-ictce-5.3.0.eb
   - Boost-1.53.0-ictce-5.3.0-Python-2.7.5.eb
   - Boost-1.53.0-goolf-1.4.10.eb
-  - Bowtie2-2.0.2-goolf-1.4.10.eb
+  - Bowtie2-2.2.4-goolf-1.4.10.eb
   - Bowtie2-2.0.2-ictce-5.3.0.eb
   - CMake-2.8.12-goolf-1.4.10.eb
   - CMake-2.8.12-ictce-5.3.0.eb
   - CUDA-5.5.22.eb
   - Cufflinks-2.0.2-goolf-1.4.10.eb
+  - Cufflinks-2.0.2-ictce-5.3.0.eb
   - Eigen-3.1.4-goolf-1.4.10.eb
   - Eigen-3.1.4-ictce-5.3.0.eb
   - ESPResSo-3.1.1-goolf-1.4.10-parallel.eb
@@ -37,7 +38,7 @@ core:
   - h5utils-1.12.1-goolf-1.4.10.eb
   - h5utils-1.12.1-ictce-5.3.0.eb
   - IPython-1.1.0-goolf-1.4.10-Python-2.7.3.eb
-  - Lmod-5.2-goolf-1.4.10.eb
+  - Lmod-5.8-GCC-4.8.2.eb
   - matplotlib-1.3.1-goolf-1.4.10-Python-2.7.6.eb
   - matplotlib-1.3.0-ictce-5.3.0-Python-2.7.5.eb
   - Meep-1.2-goolf-1.4.10.eb
@@ -50,8 +51,8 @@ core:
   - netCDF-Fortran-4.2-ictce-5.3.0.eb
   - numpy-1.8.0-ictce-5.3.0-Python-2.7.5.eb
   - numpy-1.7.1-goolf-1.4.10-Python-2.7.3.eb
-  - OpenFOAM-2.2.0-goolf-1.4.10.eb
-  - OpenFOAM-2.1.1-ictce-5.3.0.eb
+  - OpenFOAM-2.3.0-goolf-1.4.10.eb
+  - OpenFOAM-2.3.0-ictce-5.3.0.eb
   - Perl-5.16.3-goolf-1.4.10.eb
   - Perl-5.16.3-goolf-1.4.10-bare.eb
   - Perl-5.16.3-ictce-5.3.0.eb
@@ -60,8 +61,8 @@ core:
   - Python-2.5.6-ictce-5.3.0-bare
   - Python-2.7.6-goolf-1.4.10.eb
   - Python-2.7.5-ictce-5.3.0.eb
-  - Python-3.2.3-goolf-1.4.10.eb
-  - Python-3.2.3-ictce-5.3.0.eb
+  - Python-3.3.2-goolf-1.4.10.eb
+  - Python-3.3.2-ictce-5.3.0.eb
   - QuantumESPRESSO-5.0.2-goolf-1.4.10.eb
   - QuantumESPRESSO-5.0.2-goolf-1.4.10-hybrid.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0.eb
@@ -78,3 +79,9 @@ core:
   - TotalView-8.12.0-0-linux-x86-64.eb
   - ABAQUS-6.12.1-linux-x86_64.eb.eb
 ulhpc:
+  - Autoconf-2.69-gcccuda-2.6.10
+  - Automake-1.14-gcccuda-2.6.10
+  - Automake-1.14.1-GCC-4.8.2.eb
+  - Boost-1.55.0.eb
+  - CMake-3.0.0-GCC-4.8.3.eb
+  - CUDA-5.5.22-GCC-4.8.2.eb
