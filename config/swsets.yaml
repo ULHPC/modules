@@ -18,8 +18,8 @@ core:
   - CMake-2.8.12-goolf-1.4.10.eb
   - CMake-2.8.12-ictce-5.3.0.eb
   - CUDA-5.5.22.eb 
-  - Cufflinks-2.0.2-goolf-1.4.10.eb
-  - Cufflinks-2.0.2-ictce-5.3.0.eb
+  - Cufflinks-2.0.2-goolf-1.4.10.eb # Sources changed location (project website moved), need a patch in the easyconfig file.
+  - Cufflinks-2.0.2-ictce-5.3.0.eb # Sources changed location (project website moved), need a patch in the easyconfig file.
   - Eigen-3.1.4-goolf-1.4.10.eb
   - Eigen-3.1.4-ictce-5.3.0.eb
   - ESPResSo-3.1.1-goolf-1.4.10-parallel.eb
