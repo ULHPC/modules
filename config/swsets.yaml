@@ -32,8 +32,8 @@ core:
   - gnuplot-4.6.0-ictce-5.3.0.eb
   - GPAW-0.9.0.8965-goolf-1.4.10-Python-2.7.3.eb
   - GPAW-0.9.0.8965-ictce-5.3.0-Python-2.7.3.eb
-  - GROMACS-4.6.5-goolf-1.4.10-hybrid.eb
-  - GROMACS-4.6.5-goolf-1.4.10-mt
+  - GROMACS-4.6.5-goolf-1.4.10-hybrid.eb # Software bug, doesn't pass the tests. Works on Squeeze not on Wheezy
+  - GROMACS-4.6.5-goolf-1.4.10-mt.eb
   - GROMACS-4.6.1-ictce-5.3.0-mt.eb
   - GROMACS-4.6.1-ictce-5.3.0-hybrid.eb
   - h5utils-1.12.1-goolf-1.4.10.eb
