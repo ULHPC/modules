@@ -32,13 +32,11 @@ core:
   - gnuplot-4.6.0-ictce-5.3.0.eb
   - GPAW-0.9.0.8965-goolf-1.4.10-Python-2.7.3.eb
   - GPAW-0.9.0.8965-ictce-5.3.0-Python-2.7.3.eb
-  # Not working on Wheezy - GROMACS-4.6.5-goolf-1.4.10-hybrid.eb # Software bug, doesn't pass the tests. Works on Squeeze not on Wheezy (Open bug on EasyBuild side for a long time)
   - GROMACS-4.6.5-goolf-1.4.10-mt.eb
   - GROMACS-4.6.1-ictce-5.3.0-mt.eb
   - GROMACS-4.6.1-ictce-5.3.0-hybrid.eb
-  # Not working currently ON CLUSTER - h5utils-1.12.1-goolf-1.4.10.eb # Don't finish (but don't crash either) on cluster. Works fine on VM
-  # Not working currently ON CLUSTER - h5utils-1.12.1-ictce-5.3.0.eb # Don't finish (but don't crash either) on cluster. Works fine on VM
-  # Not working currently ON CLUSTER - IPython-1.1.0-goolf-1.4.10-Python-2.7.3.eb # Works fine on VM (error on cluster: bad interpreter: Permission denied)
+  - h5utils-1.12.1-goolf-1.4.10.eb # Download sources separately for byacc and ncurses from "invisible-island.net"
+  - h5utils-1.12.1-ictce-5.3.0.eb # Download sources separately for byacc and ncurses from "invisible-island.net"
   - Lmod-5.8-GCC-4.8.2.eb
   - matplotlib-1.3.1-goolf-1.4.10-Python-2.7.6.eb
   - matplotlib-1.3.0-ictce-5.3.0-Python-2.7.5.eb
@@ -58,8 +56,6 @@ core:
   - Perl-5.16.3-goolf-1.4.10-bare.eb
   # Sanity check fails - Perl-5.16.3-ictce-5.3.0.eb # Problem with some modules
   - Perl-5.16.3-ictce-5.3.0-bare.eb
-  # Fail - Python-2.5.6-goolf-1.4.10-bare.eb # libpython2.5.so.1.0: cannot open shared object file: No such file or directory
-  # Fail - Python-2.5.6-ictce-5.3.0-bare.eb # libpython2.5.so.1.0: cannot open shared object file: No such file or directory
   - Python-2.7.6-goolf-1.4.10.eb
   - Python-2.7.5-ictce-5.3.0.eb
   - Python-3.3.2-goolf-1.4.10.eb
@@ -68,14 +64,14 @@ core:
   - QuantumESPRESSO-5.0.2-goolf-1.4.10-hybrid.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0-hybrid.eb
-  # pim_1.1.5.4.tar.gz missing - R-3.0.2-goolf-1.4.10.eb # Download Java sources separately (normal behavior in EasyBuild) + some dependencies don't download correctly. Had to get them in the cluster's sources
-  # pim_1.1.5.4.tar.gz missing - R-3.0.2-ictce-5.3.0.eb # Download Java sources separately (normal behavior in EasyBuild) + some dependencies don't download correctly. Had to get them in the cluster's sources
+  - R-3.0.2-goolf-1.4.10.eb # Download Java sources separately (normal behavior in EasyBuild) + some dependencies don't download correctly. Had to get them in the cluster's sources + pim changed version from 1.1.5.4 to 1.1.5.6 (change made in the eb file)
+  - R-3.0.2-ictce-5.3.0.eb # Download Java sources separately (normal behavior in EasyBuild) + some dependencies don't download correctly. Had to get them in the cluster's sources + pim changed version from 1.1.5.4 to 1.1.5.6 (change made in the eb file)
   - R-3.0.2-ictce-5.3.0-bare.eb # Download Java sources separately (normal behavior in EasyBuild)
   - scipy-0.13.0-goolf-1.4.10-Python-2.7.3.eb
   - scipy-0.12.0-ictce-5.3.0-Python-2.7.3.eb
   # - Valgrind-3.8.1-goolf-1.4.10.eb # Bug linked to Debian having changed some files' location, fix: cd /usr/include && ln -s linux/a.out.h .
-  # - XCrySDen-1.5.53-goolf-1.4.10.eb # Missing OS dependencies: [('libX11-devel',), ('xorg-x11-proto-devel',), ('libXdamage-devel',), ('libXext-devel',), ('libXfixes-devel',)]
-  # - XCrySDen-1.5.53-ictce-5.3.0.eb
+  - XCrySDen-1.5.53-goolf-1.4.10.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
+  - XCrySDen-1.5.53-ictce-5.3.0.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   # Custom module, see how it truly works- MATLAB-2013a.eb # eb file only in ULHPC repo. jdk-7u10 and matlab sources to download manually
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
   # Fail - ABAQUS-6.12.1-linux-x86_64.eb # Need to be adapted: change sources name (note: sources have to be downloaded manually), change version and name to have a match between sources and easyconfig
@@ -86,25 +82,11 @@ ulhpc:
   - Boost-1.55.0.eb
   # GCC-4.8.3 sources to download manually - CMake-3.0.0-GCC-4.8.3.eb
   - CUDA-5.5.22-GCC-4.8.2.eb
-issue_GROMACS:
-  - GROMACS-4.6.5-goolf-1.4.10-hybrid.eb
-issue_h5utils:
-  - h5utils-1.12.1-goolf-1.4.10.eb
-  - h5utils-1.12.1-ictce-5.3.0.eb
 issue_Perl:
   - Perl-5.16.3-goolf-1.4.10.eb
   - Perl-5.16.3-ictce-5.3.0.eb
-issue_Python:
-  - Python-2.5.6-goolf-1.4.10-bare.eb
-  - Python-2.5.6-ictce-5.3.0-bare.eb
-issue_R:
-  - R-3.0.2-goolf-1.4.10.eb
-  - R-3.0.2-ictce-5.3.0.eb
 issue_Valgrind:
   - Valgrind-3.8.1-goolf-1.4.10.eb
-issue_XCrySDen:
-  - XCrySDen-1.5.53-goolf-1.4.10.eb
-  - XCrySDen-1.5.53-ictce-5.3.0.eb
 issue_MATLAB:
   - MATLAB-2013a.eb
 issue_ABAQUS:
