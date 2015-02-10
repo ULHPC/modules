@@ -6,9 +6,9 @@
 # sudo ln -s /usr/lib/x86_64-linux-gnu /usr/lib64
 core:
   - ABINIT-7.2.1-x86_64_linux_gnu4.5.eb
-  - ABySS-1.3.4-ictce-5.3.0-Python-2.7.3.eb
-  - ABySS-1.3.4-goolf-1.4.10-Python-2.7.3.eb
-  - ABySS-1.3.6-goolf-1.4.10-Python-2.7.5.eb # easyconfig fix: libreadline fix: preconfigopts = " LDFLAGS='-ltinfo' "
+  - ABySS-1.3.4-ictce-5.3.0-Python-2.7.3.eb # easyconfig fix: libreadline-6.2-goolf-1.4.10 fix: preconfigopts = " LDFLAGS='-ltinfo' "
+  - ABySS-1.3.4-goolf-1.4.10-Python-2.7.3.eb # easyconfig fix: libreadline-6.2-goolf-1.4.10 fix: preconfigopts = " LDFLAGS='-ltinfo' "
+  # Not on Debian (Python 2.7.5 problem) - ABySS-1.3.6-goolf-1.4.10-Python-2.7.5.eb
   - ASE-3.6.0.2515-ictce-5.3.0-Python-2.7.3.eb
   - ASE-3.6.0.2515-goolf-1.4.10-Python-2.7.3.eb
   - Autoconf-2.69-goolf-1.4.10.eb
