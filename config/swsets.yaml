@@ -46,7 +46,7 @@ core:
   - h5utils-1.12.1-ictce-5.3.0.eb # Download sources separately for byacc and ncurses from "invisible-island.net"
   - Lmod-5.8-GCC-4.8.2.eb # EasyConfig not in the current repo, add it.
   - matplotlib-1.3.1-goolf-1.4.10-Python-2.7.6.eb
-  - matplotlib-1.3.0-ictce-5.3.0-Python-2.7.5.eb
+  # Not working ANYMORE (strange): sanity check fails - matplotlib-1.3.0-ictce-5.3.0-Python-2.7.5.eb
   - Meep-1.2-goolf-1.4.10.eb
   - Meep-1.2-ictce-5.3.0.eb
   - netCDF-4.2-goolf-1.4.10.eb
@@ -65,23 +65,23 @@ core:
   - Perl-5.16.3-ictce-5.3.0-bare.eb
   - Python-2.7.6-goolf-1.4.10.eb
   - Python-2.7.5-ictce-5.3.0.eb
-  - Python-3.3.2-goolf-1.4.10.eb
-  - Python-3.3.2-ictce-5.3.0.eb
+  - Python-3.3.2-goolf-1.4.10.eb # Not available anymore due to extension not available anymore at this version (nose)
+  - Python-3.3.2-ictce-5.3.0.eb # Not available anymore due to extension not available anymore at this version (nose)
   - QuantumESPRESSO-5.0.2-goolf-1.4.10.eb
   - QuantumESPRESSO-5.0.2-goolf-1.4.10-hybrid.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0-hybrid.eb
-  - R-3.0.2-goolf-1.4.10.eb # Download Java sources separately (normal behavior in EasyBuild) + Easyconfig changes: (Rniftilib: ext_options->rforge_options 0.0-32->0.0-35) (Rsamtools: 1.14.1->1.14.3) (pim: 1.1.5.4->1.1.5.6)
-  - R-3.0.2-ictce-5.3.0.eb # Download Java sources separately (normal behavior in EasyBuild)
+  - R-3.0.2-goolf-1.4.10.eb # Download Java sources separately (normal behavior in EasyBuild) + Easyconfig changes: (Rniftilib: ext_options->rforge_options 0.0-32->0.0-35) (Rsamtools: 1.14.1->1.14.3) (pim: 1.1.5.4->1.1.5.6) + IRanges not downloading correctly
+  - R-3.0.2-ictce-5.3.0.eb # Download Java sources separately (normal behavior in EasyBuild) + IRanges, Biostrings, GenomicRanges, graph, not downloading correctly
   - R-3.0.2-ictce-5.3.0-bare.eb # Download Java sources separately (normal behavior in EasyBuild)
-  - scipy-0.13.0-goolf-1.4.10-Python-2.7.3.eb
-  - scipy-0.12.0-ictce-5.3.0-Python-2.7.3.eb
+  - scipy-0.13.0-goolf-1.4.10-Python-2.7.3.eb 
+  - scipy-0.12.0-ictce-5.3.0-Python-2.7.3.eb # download source manually scipy-0.12.0.tar.gz
   # - Valgrind-3.8.1-goolf-1.4.10.eb # Bug linked to Debian having changed location of some files, fix: cd /usr/include && ln -s linux/a.out.h .
   - XCrySDen-1.5.53-goolf-1.4.10.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   - XCrySDen-1.5.53-ictce-5.3.0.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   # - MATLAB-2013a.eb
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
-  # - ABAQUS-6.11.eb # Sources downloaded manually + create easyconfig file for this version.
+  - ABAQUS-6.11.1.eb # Sources downloaded manually
 ulhpc:
   - Autoconf-2.69-gcccuda-2.6.10.eb
   - Automake-1.14-gcccuda-2.6.10.eb
@@ -99,5 +99,3 @@ issue_MATLAB:
 # Sources downloaded manually + create easyconfig file for this version.
 # Impossible to make it work: "/run/shm/ABAQUS/6.11/dummy-dummy/ABAQUS-6.11/setup: No such file or directory"
 # Problem seems to come from the name being (or not being) in caps. I think it may involve changes in the easyblock file.
-issue_ABAQUS:
-  - ABAQUS-6.12.1-linux-x86_64.eb
