@@ -76,12 +76,13 @@ core:
   - R-3.0.2-ictce-5.3.0-bare.eb # Download Java sources separately (normal behavior in EasyBuild)
   - scipy-0.13.0-goolf-1.4.10-Python-2.7.3.eb 
   - scipy-0.12.0-ictce-5.3.0-Python-2.7.3.eb # download source manually scipy-0.12.0.tar.gz
-  # - Valgrind-3.8.1-goolf-1.4.10.eb # Bug linked to Debian having changed location of some files, fix: cd /usr/include && ln -s linux/a.out.h .
+  - Valgrind-3.8.1-goolf-1.4.10.eb # Following fix in easyconfig: preconfigopts = 'export CFLAGS="-I/usr/include/x86_64-linux-gnu $CFLAGS" && '
   - XCrySDen-1.5.53-goolf-1.4.10.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   - XCrySDen-1.5.53-ictce-5.3.0.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   # - MATLAB-2013a.eb
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
   - ABAQUS-6.11.1.eb # Sources downloaded manually
+  - ABAQUS-6.14.2.eb # Sources downloaded manually
 ulhpc:
   - Autoconf-2.69-gcccuda-2.6.10.eb
   - Automake-1.14-gcccuda-2.6.10.eb
@@ -96,6 +97,3 @@ issue_Valgrind:
 # Problem seems to come from giving a "bad" license key (I didn't give any...). How do a I get one and how do I pass one ?
 issue_MATLAB:
   - MATLAB-2013a.eb
-# Sources downloaded manually + create easyconfig file for this version.
-# Impossible to make it work: "/run/shm/ABAQUS/6.11/dummy-dummy/ABAQUS-6.11/setup: No such file or directory"
-# Problem seems to come from the name being (or not being) in caps. I think it may involve changes in the easyblock file.

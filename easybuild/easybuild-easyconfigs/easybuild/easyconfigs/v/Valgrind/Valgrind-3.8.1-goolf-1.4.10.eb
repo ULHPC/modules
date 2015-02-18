@@ -7,8 +7,10 @@
 # $Id$
 #
 # This work implements a part of the HPCBIOS project and is a component of the policy:
-# http://hpcbios.readthedocs.org/en/latest/HPCBIOS_07-02.html
-##
+## http://hpcbios.readthedocs.org/en/latest/HPCBIOS_07-02.html
+
+
+easyblock = 'ConfigureMake'
 
 name = 'Valgrind'
 version = '3.8.1'
@@ -21,13 +23,15 @@ source_urls = ['http://valgrind.org/downloads/']
 
 toolchain = {'name': 'goolf', 'version': '1.4.10'}
 
+preconfigopts = 'export CFLAGS="-I/usr/include/x86_64-linux-gnu $CFLAGS" && '
+
 binaries = [
     'callgrind_annotate', 'callgrind_control', 'cg_annotate', 'cg_diff',
     'cg_merge', 'ms_print', 'valgrind', 'valgrind-listener', 'vgdb'
-]
+]   
 sanity_check_paths = {
     'files': ['bin/%s' % x for x in binaries],
     'dirs': []
-}
+}   
 
 moduleclass = 'debugger'
