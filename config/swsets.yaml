@@ -82,6 +82,7 @@ core:
   # - MATLAB-2013a.eb
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
   - ABAQUS-6.11.1.eb # Sources downloaded manually
+  - ABAQUS-6.14.2.eb # Sources downloaded manually
 ulhpc:
   - Autoconf-2.69-gcccuda-2.6.10.eb
   - Automake-1.14-gcccuda-2.6.10.eb
@@ -96,6 +97,3 @@ issue_Valgrind:
 # Problem seems to come from giving a "bad" license key (I didn't give any...). How do a I get one and how do I pass one ?
 issue_MATLAB:
   - MATLAB-2013a.eb
-# Sources downloaded manually + create easyconfig file for this version.
-# Impossible to make it work: "/run/shm/ABAQUS/6.11/dummy-dummy/ABAQUS-6.11/setup: No such file or directory"
-# Problem seems to come from the name being (or not being) in caps. I think it may involve changes in the easyblock file.
