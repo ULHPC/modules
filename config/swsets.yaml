@@ -76,7 +76,7 @@ core:
   - R-3.0.2-ictce-5.3.0-bare.eb # Download Java sources separately (normal behavior in EasyBuild)
   - scipy-0.13.0-goolf-1.4.10-Python-2.7.3.eb 
   - scipy-0.12.0-ictce-5.3.0-Python-2.7.3.eb # download source manually scipy-0.12.0.tar.gz
-  # - Valgrind-3.8.1-goolf-1.4.10.eb # Bug linked to Debian having changed location of some files, fix: cd /usr/include && ln -s linux/a.out.h .
+  - Valgrind-3.8.1-goolf-1.4.10.eb # Following fix in easyconfig: preconfigopts = 'export CFLAGS="-I/usr/include/x86_64-linux-gnu $CFLAGS" && '
   - XCrySDen-1.5.53-goolf-1.4.10.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   - XCrySDen-1.5.53-ictce-5.3.0.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   # - MATLAB-2013a.eb
