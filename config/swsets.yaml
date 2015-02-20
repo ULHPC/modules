@@ -79,7 +79,6 @@ core:
   - Valgrind-3.8.1-goolf-1.4.10.eb # Following fix in easyconfig: preconfigopts = 'export CFLAGS="-I/usr/include/x86_64-linux-gnu $CFLAGS" && '
   - XCrySDen-1.5.53-goolf-1.4.10.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
   - XCrySDen-1.5.53-ictce-5.3.0.eb # changing dependencies in XCrySDen to libXmu-dev and in Mesa to libX11-dev x11proto-core-dev libXdamage-dev libXext-dev libXfixes-dev + downloading MesaLib sources manually.
-  - MATLAB-2013a.eb # Sources to get manually
   - MATLAB-2013b.eb # Sources to get manually
   - MATLAB-2014a.eb # Sources to get manually
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
