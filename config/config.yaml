@@ -2,5 +2,5 @@ swsets :
    - core
 mns : ThematicMNS
 buildmode : local
-apps_root : /usr/local/apps
+apps_root : $HOME/.local/resif 
 release : HEAD
