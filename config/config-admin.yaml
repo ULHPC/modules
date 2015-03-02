@@ -1,6 +1,0 @@
-swsets :
-   - core
-mns : ThematicMNS
-buildmode : local
-apps_root : /opt/apps
-release : HEAD
