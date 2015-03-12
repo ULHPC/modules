@@ -1,5 +1,5 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 100 -*-
-Time-stamp: <Mer 2014-08-20 21:28 svarrette>
+Time-stamp: <Ven 2014-11-14 00:42 svarrette>
 
        _   _ _       _   _ ____   ____   __  __           _       _
       | | | | |     | | | |  _ \ / ___| |  \/  | ___   __| |_   _| | ___  ___
@@ -62,17 +62,31 @@ The Git branching model for this repository follows the guidelines of
 [gitflow](http://nvie.com/posts/a-successful-git-branching-model/).
 In particular, the central repository holds two main branches with an infinite lifetime:
 
-* `prod`:    the *production-ready* branch
-* `develop`: the main branch where the latest developments intervene. This is
+* `production`:    the *production-ready* branch
+* `devel`: the main branch where the latest developments intervene. This is
   the *default* branch you get when you clone the repo
 
-### Ruby, RVM, Bundle and Rakefile
+### Ruby, Bundle and Rakefile
 
 The various operations that can be conducted from this repository are piloted
 from a `Rakefile` and assumes you have a running Ruby installation.
 
-The bootstrapping of your repository is based on [RVM](https://rvm.io/), **thus
-ensure this tools are installed on your system** -- see
+#### bootstrapping without RVM 
+
+If you hate [RVM](https://rvm.io/) and run [Debian](https://www.debian.org/), you can bootstrap this repository as follows: 
+
+	$> sudo apt-get install build-essential  ruby1.9.3	$> sudo gem install bundler
+	$> bundle 
+
+
+You should now be able to access the list of available tasks by running:
+
+	$> rake -T
+
+#### bootstrapping with RVM 
+
+The bootstrapping of your repository is normally based on [RVM](https://rvm.io/), thus
+ensure this tools are installed on your system -- see
 [installation notes](https://rvm.io/rvm/install).
 
 The ruby stuff part of this repository corresponds to the following files: 
@@ -81,6 +95,8 @@ The ruby stuff part of this repository corresponds to the following files:
   project as [gemset](https://rvm.io/gemsets) name
 * `Gemfile[.lock]`: used by `[bundle](http://bundler.io/)`
   
+
+
 
 
 

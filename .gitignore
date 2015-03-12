@@ -56,3 +56,8 @@ docs/_build/
 /src_*
 
 /Vagrantfile
+/.bundle*
+/.vagrant*
+.ruby-*
+/src*
+config/*.cfg
