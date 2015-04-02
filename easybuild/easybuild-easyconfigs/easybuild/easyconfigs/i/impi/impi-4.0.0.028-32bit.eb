@@ -13,12 +13,10 @@ sources = ['l_mpi_pu_%(version)s.tgz']
 
 dontcreateinstalldir = 'True'
 
-# license file
+# license_file file
 import os
-license_file = os.path.join(os.getenv('HOME'), "licenses", "intel", "license.lic")
+license_file = os.path.join(os.getenv('HOME'), "licenses", "intel", "license_file.lic")
 
 m32 = True
-
-modextravars = {"I_MPI_MPD_RSH": "oarsh"}
 
 moduleclass = 'mpi'

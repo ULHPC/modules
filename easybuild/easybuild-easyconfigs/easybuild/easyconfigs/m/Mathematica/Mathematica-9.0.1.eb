@@ -9,6 +9,6 @@ toolchain = {'name': 'dummy', 'version': 'dummy'}
 
 sources = ['Mathematica_%s_LINUX.sh' % version]
 
-license_server = 'license.example.com'
+license_server = 'license_file.example.com'
 
 moduleclass = 'math'

@@ -13,7 +13,7 @@ toolchain = {'name': 'dummy', 'version': 'dummy'}
 sources = ['ANSYS-15.0.zip']
 
 import os
-license_server = os.getenv('EB_ANSYS_LICENSE_SERVER', 'license.example.com')
+license_server = os.getenv('EB_ANSYS_LICENSE_SERVER', 'license_file.example.com')
 license_server_port = os.getenv('EB_ANSYS_LICENSE_SERVER_PORT', '2325:1055')
 
 moduleclass = 'tools'

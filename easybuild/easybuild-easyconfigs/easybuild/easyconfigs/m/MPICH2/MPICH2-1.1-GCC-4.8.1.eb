@@ -1,3 +1,5 @@
+easyblock = 'ConfigureMake'
+
 name = 'MPICH2'
 version = '1.1'
 
@@ -23,5 +25,3 @@ sanity_check_paths = {
 parallel = 1
 
 moduleclass = 'mpi'
-
-modextravars = {"HYDRA_LAUNCHER_EXEC": "oarsh", "HYDRA_IFACE": "ib0"}

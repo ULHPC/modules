@@ -12,5 +12,3 @@ sources = [SOURCELOWER_TGZ]
 builddependencies = [('Bison', '2.7')]
 
 moduleclass = 'mpi'
-
-modextravars = {"HYDRA_LAUNCHER_EXEC": "oarsh"}

@@ -1,5 +1,5 @@
 # #
-# Copyright 2009-2013 Ghent University
+# Copyright 2009-2015 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -36,9 +36,9 @@ import os
 
 from distutils.version import LooseVersion
 
-from easybuild.framework.easyconfig import CUSTOM
 from easybuild.easyblocks.generic.intelbase import IntelBase
-from easybuild.tools.filetools import run_cmd
+from easybuild.framework.easyconfig import CUSTOM
+from easybuild.tools.run import run_cmd
 
 class EB_itac(IntelBase):
     """

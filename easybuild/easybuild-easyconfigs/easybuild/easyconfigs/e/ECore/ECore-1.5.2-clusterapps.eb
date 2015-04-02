@@ -11,7 +11,7 @@ toolchain = {'name': 'dummy', 'version': 'dummy'}
 
 sources = ['%s-%s%s.tgz' % (name.lower(), version, versionsuffix)]
 
-patches = ['ecore-license-var.patch']
+patches = ['ecore-license_file-var.patch']
 
 comp = ('GCC', '4.6.3')
 dependencies = [('OpenMPI', '1.4.5', '-no-OFED', comp)]
