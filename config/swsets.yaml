@@ -17,6 +17,8 @@ core:
   - Autoconf-2.69-ictce-5.3.0.eb
   - Automake-1.13.4-goolf-1.4.10.eb
   - Automake-1.14-ictce-5.3.0.eb
+  - BioPerl-1.6.1-ictce-5.3.0-Perl-5.16.3.eb
+  - BioPerl-1.6.1-goolf-1.4.10-Perl-5.16.3.eb
   - Boost-1.53.0-ictce-5.3.0-Python-2.7.5.eb
   - Boost-1.53.0-goolf-1.4.10.eb
   - Bowtie2-2.2.2-goolf-1.4.10.eb
