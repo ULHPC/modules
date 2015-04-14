@@ -1,0 +1,33 @@
+##
+# This file is an EasyBuild reciPY as per https://github.com/hpcugent/easybuild
+#
+# Copyright:: Copyright 2012-2013 University of Luxembourg/Luxembourg Centre for Systems Biomedicine
+# Authors::   Fotis Georgatos <fotis.georgatos@uni.lu>, Kenneth Hoste
+# License::   MIT/GPL
+# $Id$
+#
+# This work implements a part of the HPCBIOS project and is a component of the policy:
+# http://hpcbios.readthedocs.org/en/latest/HPCBIOS_2012-97.html
+##
+
+name = 'MATLAB'
+version = "2013a"
+
+homepage = 'http://www.mathworks.com/products/matlab'
+description = """MATLAB is a high-level language and interactive environment
+that enables you to perform computationally intensive tasks faster than with
+traditional programming languages such as C, C++, and Fortran."""
+
+toolchain = {'name': 'dummy', 'version': 'dummy'}
+
+sources = [SOURCELOWER_TAR_GZ]
+
+sanity_check_paths = { 
+    'files': ['bin/matlab'],
+    'dirs': []
+}
+
+import os
+license_server = os.getenv('EB_MATLAB_LICENSE_SERVER', 'kojak.uni.lux')
+license_server_port = os.getenv('EB_MATLAB_LICENSE_SERVER_PORT', '27002')
+key = os.getenv('MATLAB2013a_KEY')
