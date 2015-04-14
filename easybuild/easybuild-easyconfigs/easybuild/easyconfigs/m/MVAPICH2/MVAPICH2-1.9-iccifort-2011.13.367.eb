@@ -16,3 +16,5 @@ builddependencies = [('Bison', '2.7')]
 preconfigopts = 'LDFLAGS="-Wl,-rpath,$EBROOTICC/compiler/lib/intel64 $LDFLAGS"'
 
 moduleclass = 'mpi'
+
+modextravars = {"HYDRA_LAUNCHER_EXEC": "oarsh"}

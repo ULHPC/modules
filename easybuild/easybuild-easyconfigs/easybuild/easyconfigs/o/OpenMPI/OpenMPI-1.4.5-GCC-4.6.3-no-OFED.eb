@@ -13,6 +13,7 @@ sources = [SOURCELOWER_TAR_GZ]
 source_urls = ['http://www.open-mpi.org/software/ompi/v%(version_major_minor)s/downloads']
 
 patches = ['pax_disable.patch']
+patches += ['openmpi-mca-params.conf-1.4.5-local.patch']
 
 configopts = '--with-threads=posix --enable-shared --enable-mpi-threads --without-openib '
 configopts += '--enable-mpirun-prefix-by-default '  # suppress failure modes in relation to mpirun path

@@ -22,3 +22,5 @@ withmpe = True
 parallel = 1
 
 moduleclass = 'mpi'
+
+modextravars = {"HYDRA_LAUNCHER_EXEC": "oarsh"}

@@ -31,3 +31,5 @@ builddependencies = [('Bison', '2.5')]
 parallel = 1
 
 moduleclass = 'mpi'
+
+modextravars = {"HYDRA_LAUNCHER_EXEC": "oarsh"}

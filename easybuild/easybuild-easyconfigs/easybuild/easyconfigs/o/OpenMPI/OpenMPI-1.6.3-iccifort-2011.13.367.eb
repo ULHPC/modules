@@ -11,6 +11,8 @@ toolchain = {'name': 'iccifort', 'version': '2011.13.367'}
 sources = [SOURCELOWER_TAR_GZ]
 source_urls = ['http://www.open-mpi.org/software/ompi/v%(version_major_minor)s/downloads']
 
+patches = ['openmpi-mca-params.conf-1.6.4-local.patch']
+
 configopts = '--with-threads=posix --enable-shared --enable-mpi-thread-multiple --with-openib '
 configopts += '--enable-mpirun-prefix-by-default '  # suppress failure modes in relation to mpirun path
 configopts += '--with-hwloc=$EBROOTHWLOC '  # hwloc support
@@ -18,11 +20,7 @@ configopts += '--with-hwloc=$EBROOTHWLOC '  # hwloc support
 dependencies = [('hwloc', '1.6')]
 
 # needed for --with-openib
-if OS_NAME in ['debian', 'ubuntu']:
-    osdependencies = ['libibverbs-dev']
-else:
-    # OK for OS_NAME == redhat, fedora, RHEL, SL, centos
-    osdependencies = ['libibverbs-devel']
+osdependencies = [('libibverbs-dev', 'libibverbs-devel')]
 
 sanity_check_paths = {
     'files': ["bin/%s" % binfile for binfile in ["ompi_info", "opal_wrapper", "orterun"]] +

@@ -26,3 +26,5 @@ sanity_check_paths = {
 }
 
 moduleclass = 'mpi'
+
+modextravars = {"HYDRA_LAUNCHER_EXEC": "oarsh", "HYDRA_IFACE": "ib0"}
