@@ -1,0 +1,51 @@
+
+# Make sure you install: HPCBIOS*/*eb & PRACE !!!
+# * $CFGS/h/HPCBIOS*/*eb -r # HPCBIOS objectives, with all their dependencies
+# ensure TotalView is there, it should have come via one of the HPCBIOS install steps
+
+export CFGS="$HOME/easybuild-easyconfigs/easybuild/easyconfigs" # where to find the easyconfigs sources
+# time eb --search goolf-1.4.10|grep eb$|cut -c6-|sort -r|xargs -n1 --replace -P12 time eb {} -r
+# time eb --search ictce-5.3.0 |grep eb$|cut -c6-|sort -r|xargs -n1 --replace -P12 time eb {} -r
+
+# Manually handle:
+# * MATLAB, Paraview, VTK
+# * $CFGS/?/*/*goolfc*eb -r # CUDA & CUDA related builds arrive this way
+# * $CFGS/p/PRACE/PRACE-*.eb -r
+
+$CFGS/c/CPLEX/CPLEX-12.4.eb
+$CFGS/c/CUDA/CUDA-5.*eb
+$CFGS/o/ORCA/ORCA-2_9_1-linux_x86-64.eb
+$CFGS/o/ORCA/ORCA-3_0_0-linux_x86-64_openmpi_165.eb
+#$CFGS/c/CMake/CMake-2.8.10.2-ictce-5.2.0.eb --try-software-version=2.8.11 --try-toolchain=dummy,dummy
+#$CFGS/c/CMake/CMake-2.8.10.2-ictce-5.2.0.eb --try-software-version=2.8.9 --try-toolchain=dummy,dummy
+$CFGS/q/QuantumESPRESSO/QuantumESPRESSO-*eb
+$CFGS/w/WRF/*eb -r
+$CFGS/w/WPS/*eb
+
+## Some of our users may need these, too:
+#    ABINIT/7.0.3-x86_64_linux_gnu4.5
+#    CPLEX/12.4
+#    EPD/7.3-2-rh5
+#    FreeSurfer/5.3.0-centos4_x86_64
+#    MUSCLE/3.8.31-i86linux64
+#    ORCA/2_9_1-linux_x86-64
+#    bbcp/12.01.30.00.0-amd64_linux26
+#    ipp/7.0.5.233
+#    tbb/4.0.0.233
+#
+
+## Some extra gifts coming from past user discussions:
+# * GCC*
+# * QE*
+# * Tesla Deployment Kit
+# * grep -R Tarball ./?/*/*eb|grep -v 4.1.13|cut -d: -f1|xargs -n1 -P12 --replace time echo eb {} -r
+# * vsc-base-1.6.9.eb TCC-0.9.26.eb picard-1.100.eb picard-1.39.eb CAP3-20071221-intel-x86.eb CAP3-20071221-intel-x86_64.eb CAP3-20071221-opteron.eb qtop-53-1.eb
+# * time eb Allinea-4.1-32834-Redhat-5.7-x86_64.eb --try-software-version=4.2-34164-Ubuntu-10.04-x86_64
+# * GIMPS*
+#
+## N.B. chaos my have diffs like the following, due to osdependencies, that are out of modules/easybuild/hpcbios scope:
+#    GLib/2.34.3-goolf-1.4.10
+#    GLib/2.34.3-ictce-5.3.0
+#    cairo/1.12.14-goolf-1.4.10
+#    fontconfig/2.10.91-goolf-1.4.10
+#    motif/2.3.4-goolf-1.4.10
