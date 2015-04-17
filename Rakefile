@@ -20,7 +20,7 @@ FalkorLib.config.git do |c|
     },
     'easybuild/easyblocks' => {
       :url    => 'https://github.com/ULHPC/easybuild-easyblocks.git',
-      :branch => 'develop'
+      :branch => 'uni.lu'
     },
     'easybuild/easyconfigs' => {
       :url    => 'https://github.com/ULHPC/easybuild-easyconfigs.git',
