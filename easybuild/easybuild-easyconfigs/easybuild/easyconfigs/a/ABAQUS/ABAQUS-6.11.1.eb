@@ -8,9 +8,10 @@ toolchain = {'name': 'dummy', 'version': 'dummy'}
 
 sources = ['%s-%s.tgz' % (name, version.split('-')[0])]
 
-postinstallcmds = ["echo purdey purdey.uni.lux > %(installdir)s/../hostaliases"]
+#postinstallcmds = ["echo purdey purdey.uni.lux > %(installdir)s/../hostaliases"]
 
-modextrapaths = {'HOSTALIASES': '$root/../hostaliases'}
-modextravars = {'LM_LICENSE_FILE': '27001@purdey.uni.lux'}
+#modextrapaths = {'HOSTALIASES': '$root/../hostaliases'}
+#modextravars = {'LM_LICENSE_FILE': '27001@purdey.uni.lux'}
+modextravars = {'LM_LICENSE_FILE': '27001@hpc-lm.uni.lux'}
 
 moduleclass = 'cae'
