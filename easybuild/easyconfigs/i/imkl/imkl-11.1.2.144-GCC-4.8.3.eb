@@ -27,6 +27,6 @@ interfaces = True
 
 # license_file file
 import os
-license_file = os.path.join(os.getenv('HOME'), "licenses", "intel", "license_file.lic")
+license_file = os.path.join('opt', 'apps', "licenses", "intel", "license.lic")
 
 moduleclass = 'numlib'
