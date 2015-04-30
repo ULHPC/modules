@@ -11,13 +11,14 @@ toolchain = {'name': 'iccifort', 'version': '2015.1.133-GCC-4.9.2'}
 sources = [SOURCELOWER_TAR_GZ]
 source_urls = ['http://www.open-mpi.org/software/ompi/v%(version_major_minor)s/downloads']
 
-
 configopts = '--with-threads=posix --enable-shared --enable-mpi-thread-multiple --with-verbs '
 configopts += '--enable-mpirun-prefix-by-default '  # suppress failure modes in relation to mpirun path
 configopts += '--with-hwloc=$EBROOTHWLOC '  # hwloc support
 configopts += '--disable-dlopen '  # statically link component, don't do dynamic loading
 
 dependencies = [('hwloc', '1.10.0')]
+
+patches = ['openmpi-mca-params.conf-1.6.4-local.patch']
 
 # needed for --with-verbs
 osdependencies = [('libibverbs-dev', 'libibverbs-devel')]
