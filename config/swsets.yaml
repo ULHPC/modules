@@ -30,6 +30,7 @@ core:
   # Cufflinks fix: went upstream
   - Cufflinks-2.0.2-goolf-1.4.10.eb # Sources changed location (project website moved) (In fact, sources from the new site don't work, use old one that are on the server) Fix applied in last EB version: preconfigopts = 'CPPFLAGS="-I$EBROOTEIGEN/include $CPPFLAGS" LDFLAGS="-lboost_system $LDFLAGS" '
   - Cufflinks-2.0.2-ictce-5.3.0.eb # Sources changed location (project website moved) (In fact, sources from the new site don't work, use old one that are on the server) Fix applied in last EB version: preconfigopts = 'CPPFLAGS="-I$EBROOTEIGEN/include $CPPFLAGS" LDFLAGS="-lboost_system $LDFLAGS" '
+  - Cufflinks-2.2.1-goolf-1.4.10.eb
   - Eigen-3.1.4-goolf-1.4.10.eb
   - Eigen-3.1.4-ictce-5.3.0.eb
   - ESPResSo-3.1.1-goolf-1.4.10-parallel.eb
