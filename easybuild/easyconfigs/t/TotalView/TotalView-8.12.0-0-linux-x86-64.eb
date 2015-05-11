@@ -32,7 +32,7 @@ sources = [
 
 # licensepath
 import os
-license_file = os.path.join('opt', 'apps', "licenses", "roguewave", "license.lic")
+license_file = os.path.join('/opt', 'apps', "licenses", "roguewave", "license.lic")
 
 moduleclass = 'debugger'
 
