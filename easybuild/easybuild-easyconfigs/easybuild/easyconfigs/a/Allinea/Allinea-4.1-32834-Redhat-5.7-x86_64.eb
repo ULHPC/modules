@@ -12,6 +12,6 @@ sources = ['%(namelower)s-tools-%(version)s.tar']
 
 # license_file file
 import os
-license_file = os.path.join('opt', 'apps', "licenses", "allinea", "license.lic")
+license_file = os.path.join('/opt', 'apps', "licenses", "allinea", "license.lic")
 
 moduleclass = 'tools'

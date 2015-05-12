@@ -18,6 +18,6 @@ dontcreateinstalldir = 'True'
 
 # license_file file
 import os
-license_file = os.path.join('opt', 'apps', "licenses", "intel", "license.lic")
+license_file = os.path.join('/opt', 'apps', "licenses", "intel", "license.lic")
 
 moduleclass = 'compiler'

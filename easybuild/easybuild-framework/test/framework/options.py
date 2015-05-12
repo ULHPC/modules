@@ -285,7 +285,8 @@ class CommandLineOptionsTest(EnhancedTestCase):
         check_args(['--debug', '--stop=configure', '--try-software-name=foo'])
         check_args(['--debug', '--robot-paths=/tmp/foo:/tmp/bar'])
         # --robot has preference over --robot-paths, --robot is not passed down
-        check_args(['--debug', '--robot-paths=/tmp/foo', '--robot=/tmp/bar'], passed_args=['--debug', '--robot-paths=/tmp/bar:/tmp/foo'])
+        check_args(['--debug', '--robot-paths=/tmp/foo', '--robot=/tmp/bar'],
+                   passed_args=['--debug', '--robot-paths=/tmp/bar:/tmp/foo'])
 
     # 'zzz' prefix in the test name is intentional to make this test run last,
     # since it fiddles with the logging infrastructure which may break things
@@ -1556,6 +1557,7 @@ class CommandLineOptionsTest(EnhancedTestCase):
         for envvar in ['XDG_CONFIG_DIRS', 'XDG_CONFIG_HOME']:
             if envvar in os.environ:
                 del os.environ[envvar]
+        reload(easybuild.tools.options)
 
         args = [
             '--unittest-file=%s' % self.logfile,
@@ -1645,6 +1647,18 @@ class CommandLineOptionsTest(EnhancedTestCase):
         del os.environ['XDG_CONFIG_HOME']
         os.environ['HOME'] = home
         reload(easybuild.tools.options)
+
+    def test_generate_cmd_line(self):
+        """Test for generate_cmd_line."""
+        ebopts = EasyBuildOptions()
+        self.assertEqual(ebopts.generate_cmd_line(), [])
+
+        ebopts = EasyBuildOptions(go_args=['--force'])
+        self.assertEqual(ebopts.generate_cmd_line(), ['--force'])
+
+        ebopts = EasyBuildOptions(go_args=['--search=bar', '--search', 'foobar'])
+        self.assertEqual(ebopts.generate_cmd_line(), ['--search=foobar'])
+
 
 def suite():
     """ returns all the testcases in this module """
