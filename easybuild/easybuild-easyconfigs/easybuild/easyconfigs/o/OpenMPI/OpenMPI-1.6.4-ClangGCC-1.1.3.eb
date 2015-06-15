@@ -13,7 +13,7 @@ source_urls = ['http://www.open-mpi.org/software/ompi/v%(version_major_minor)s/d
 
 dependencies = [('hwloc', '1.6.2')]
 
-patches = ['openmpi-mca-params.conf-1.6.4-local.patch']
+patches = ['openmpi-mca-params.conf-pre-1.8.6-UNILU.patch']
 
 configopts = '--with-threads=posix --enable-shared --enable-mpi-thread-multiple --with-openib '
 configopts += '--enable-mpirun-prefix-by-default '  # suppress failure modes in relation to mpirun path

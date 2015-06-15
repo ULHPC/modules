@@ -19,7 +19,7 @@ configopts += '--disable-dlopen '  # statically link component, don't do dynamic
 
 dependencies = [('hwloc', '1.9')]
 
-patches = ['openmpi-mca-params.conf-1.6.4-local.patch']
+patches = ['openmpi-mca-params.conf-pre-1.8.6-UNILU.patch']
 
 sanity_check_paths = {
     'files': ["bin/%s" % binfile for binfile in ["ompi_info", "opal_wrapper", "orterun"]] +
