@@ -17,7 +17,7 @@ configopts += '--with-hwloc=$EBROOTHWLOC '  # hwloc support
 
 dependencies = [('hwloc', '1.8.1')]
 
-patches = ['openmpi-mca-params.conf-1.6.4-local.patch']
+patches = ['openmpi-mca-params.conf-pre-1.8.6-UNILU.patch']
 
 # needed for --with-openib
 osdependencies = [('libibverbs-dev', 'libibverbs-devel')]

@@ -16,7 +16,7 @@ dependencies = [
     ('libpciaccess', '0.13.1'),
 ]
 
-patches = ['openmpi-mca-params.conf-1.6.4-local.patch']
+patches = ['openmpi-mca-params.conf-pre-1.8.6-UNILU.patch']
 
 configopts = '--with-threads=posix --enable-shared --enable-mpi-thread-multiple --with-openib '
 configopts += '--enable-mpirun-prefix-by-default '  # suppress failure modes in relation to mpirun path
