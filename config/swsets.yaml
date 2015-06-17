@@ -128,5 +128,11 @@ lcsb:
   - BLAST+-2.2.28-goolf-1.4.10-Python-2.7.3.eb
   - pandas-0.16.0-goolf-1.4.10-Python-3.3.2.eb
   - Trinity-2.0.6-goolf-1.4.10.eb
+  - PLINK-1.07-ictce-7.3.5.eb
+  - PLINK-1.90-beta3r-Linux_x86_64.eb
+  - SNPTEST-v2.5.1_Linux_x86_64_static.eb
+  - HMMER-3.1b2-ictce-7.3.5.eb
+  - FASTX-Toolkit-0.0.14-goolf-1.4.10.eb
+  - Trimmomatic-0.33-Java-1.7.0_21.eb
 
 # To create a "all" software set, use this command: "find -name "*.eb" -exec basename {} \; | sed "s/^/  - /g" > swsets.yaml"
