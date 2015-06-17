@@ -85,6 +85,7 @@ core:
   - R-3.0.2-ictce-5.3.0.eb # Download Java sources separately (normal behavior in EasyBuild) + IRanges, Biostrings, GenomicRanges, graph, not downloading correctly
   - R-3.0.2-ictce-5.3.0-bare.eb # Download Java sources separately (normal behavior in EasyBuild)
   - R-3.2.0-ictce-7.3.5-bare.eb
+  - R-3.2.0-ictce-7.3.5-Rmpi.eb
   - SAMtools-0.1.19-goolf-1.4.10.eb
   - SAMtools-0.1.19-ictce-5.3.0.eb
   - SAMtools-1.2-ictce-5.3.0.eb
