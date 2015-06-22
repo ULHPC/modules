@@ -61,3 +61,5 @@ docs/_build/
 .ruby-*
 /src*
 config/*.cfg
+
+Gemfile.lock
