@@ -63,3 +63,4 @@ docs/_build/
 config/*.cfg
 
 Gemfile.lock
+*~
