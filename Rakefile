@@ -14,20 +14,17 @@ end
 # Git customization
 FalkorLib.config.git do |c|
   c[:subtrees] = {
-    'easybuild/framework' => {
+    'easybuild/easybuild-framework' => {
       :url    => 'https://github.com/ULHPC/easybuild-framework.git',
       :branch => 'develop'
     },
-    'easybuild/easyblocks' => {
+    'easybuild/easybuild-easyblocks' => {
       :url    => 'https://github.com/ULHPC/easybuild-easyblocks.git',
       :branch => 'uni.lu'
     },
-    'easybuild/easyconfigs' => {
+    'easybuild/easybuild-easyconfigs' => {
       :url    => 'https://github.com/ULHPC/easybuild-easyconfigs.git',
       :branch => 'uni.lu'
-    },
-    'easybuild/wiki' => {
-      :url    => 'https://github.com/hpcugent/easybuild-wiki.git',
     },
   }
 end
