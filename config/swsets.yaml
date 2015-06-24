@@ -63,6 +63,7 @@ core:
   - numpy-1.7.1-goolf-1.4.10-Python-2.7.3.eb
   - OpenFOAM-2.3.0-goolf-1.4.10.eb
   - OpenFOAM-2.3.0-ictce-5.3.0.eb
+  - OpenMPI-1.8.4-GCC-4.9.2.eb
   - Perl-5.16.3-goolf-1.4.10.eb # Perl problem comes from the shebang being too long. This problem should disappear at release since the rootinstall will be way closer to the root, we will be well below the 127 characters limit.
   - Perl-5.16.3-goolf-1.4.10-bare.eb
   - Perl-5.16.3-ictce-5.3.0.eb # Perl problem comes from the shebang being too long. This problem should disappear at release since the rootinstall will be way closer to the root, we will be well below the 127 characters limit.
