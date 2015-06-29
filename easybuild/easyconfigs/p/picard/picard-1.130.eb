@@ -1,0 +1,20 @@
+name = 'picard'
+version = '1.130'
+
+homepage = 'http://sourceforge.net/projects/picard'
+description = """A set of tools (in Java) for working with next generation sequencing data in the BAM format."""
+
+toolchain = {'name': 'dummy', 'version': 'dummy'}
+
+#https://github.com/broadinstitute/picard/releases/download/1.130/picard-tools-1.130.zip
+source_urls = ["https://github.com/broadinstitute/picard/releases/download/"]
+sources = ['%(version)s/picard-tools-%(version)s.zip']
+
+sanity_check_paths = {
+'files': ["picard.jar"],
+'dirs': [],
+}
+
+dependencies = [('Java', '1.7.0_21')]
+
+moduleclass = 'bio'
