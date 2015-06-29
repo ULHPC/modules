@@ -24,7 +24,7 @@ description = """mpiBLAST is a freely available, open-source, parallel implement
 
 
 
-toolchain = {'name': 'ictce', 'version': '7.3.0'}
+toolchain = {'name': 'ictce', 'version': '7.3.5'}
 toolchainopts = {'pic': True, 'usempi': True}
 
 # eg. http://www.mpiblast.org/downloads/files/mpiBLAST-1.6.0.tgz
