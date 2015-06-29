@@ -1,0 +1,17 @@
+name = 'ABAQUS'
+version = '6.14.2'
+
+homepage = 'http://www.simulia.com/products/abaqus_fea.html'
+description = "Finite Element Analysis software for modeling, visualization and best-in-class implicit and explicit dynamics FEA."
+
+toolchain = {'name': 'dummy', 'version': 'dummy'}
+
+sources = ['%s-%s.tgz' % (name, version.split('-')[0])]
+
+#postinstallcmds = ["echo purdey purdey.uni.lux > %(installdir)s/../hostaliases"]
+
+#modextrapaths = {'HOSTALIASES': '$root/../hostaliases'}
+#modextravars = {'LM_LICENSE_FILE': '27001@purdey.uni.lux'}
+modextravars = {'LM_LICENSE_FILE': '27001@hpc-lm.uni.lux'}
+
+moduleclass = 'cae'
