@@ -99,6 +99,7 @@ core:
   - MATLAB-2013a.eb # Sources to get manually + Provide license key in the MATLAB2013a_KEY environment variable
   - MATLAB-2013b.eb # Sources to get manually + Provide license key in the MATLAB2013b_KEY environment variable
   - MATLAB-2014a.eb # Sources to get manually + Provide license key in the MATLAB2014a_KEY environment variable
+  - MATLAB-2015a.eb # Sources to get manually + Provide license key in the MATLAB2015a_KEY environment variable
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
   - ABAQUS-6.11.1.eb # Sources downloaded manually
   - ABAQUS-6.14.2.eb # Sources downloaded manually
