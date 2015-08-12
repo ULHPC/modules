@@ -1,5 +1,5 @@
 ##
-# Copyright 2013 Ghent University
+# Copyright 2013-2015 Ghent University
 #
 # This file is part of EasyBuild,
 # originally created by the HPC team of Ghent University (http://ugent.be/hpc/en),
@@ -41,6 +41,7 @@ from easybuild.framework.easyconfig import MANDATORY
 from easybuild.framework.easyconfig.easyconfig import EasyConfig, get_easyblock_class
 from easybuild.framework.easyconfig.tools import get_paths_for
 from easybuild.tools import config
+from easybuild.tools.filetools import write_file
 from easybuild.tools.module_naming_scheme import GENERAL_CLASS
 from easybuild.tools.run import parse_log_for_error, run_cmd, run_cmd_qa
 from easybuild.tools.environment import modify_env, read_environment
@@ -74,9 +75,7 @@ class InitTest(TestCase):
             extratxt,
         ])
 
-        f = open(self.eb_file, "w")
-        f.write(txt % easyblock)
-        f.close()
+        write_file(self.eb_file, txt % easyblock)
 
     def setUp(self):
         """Setup test."""
@@ -93,7 +92,7 @@ class InitTest(TestCase):
 
 
 def template_init_test(self, easyblock):
-    """Test whether all easyconfigs can be initialized."""
+    """Test whether all easyblocks can be initialized."""
 
     def check_extra_options_format(extra_options):
         """Make sure extra_options value is of correct format."""

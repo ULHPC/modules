@@ -1,11 +1,8 @@
-# Global advice: have all sources already downloaded in a directory since most of the problems are due to sources download problems (broken links/download that stops (but no crash) due to strange network problem)
-
 # Toolchains in core:
 # ictce-5.3.0
 # goolf-1.4.10
-# GCC 4.7.x requires : 
-# sudo apt-get install libc6-dev-i386
-# sudo ln -s /usr/lib/x86_64-linux-gnu /usr/lib64
+# ictce-7.3.5
+
 core:
   - ABINIT-7.2.1-x86_64_linux_gnu4.5.eb
   - ABySS-1.3.4-ictce-5.3.0-Python-2.7.3.eb # easyconfig fix: libreadline-6.2-goolf-1.4.10 fix: preconfigopts = " LDFLAGS='-ltinfo' "
@@ -14,6 +11,7 @@ core:
   # Not on Debian (Python 2.7.5 problem) - ABySS-1.3.6-goolf-1.4.10-Python-2.7.5.eb
   - ASE-3.6.0.2515-ictce-5.3.0-Python-2.7.3.eb
   - ASE-3.6.0.2515-goolf-1.4.10-Python-2.7.3.eb
+  - ASE-3.9.0.4465-ictce-7.3.5-Python-2.7.10.eb
   - Autoconf-2.69-goolf-1.4.10.eb
   - Autoconf-2.69-ictce-5.3.0.eb
   - Automake-1.13.4-goolf-1.4.10.eb
@@ -51,8 +49,10 @@ core:
   - ictce-7.3.5.eb
   - Lmod-5.8-GCC-4.8.2.eb # EasyConfig not in the current repo, add it.
   - matplotlib-1.3.1-goolf-1.4.10-Python-2.7.6.eb
+  - matplotlib-1.4.3-ictce-7.3.5-Python-2.7.10.eb
   - Meep-1.2-goolf-1.4.10.eb
   - Meep-1.2-ictce-5.3.0.eb
+  - mpiBLAST-1.6.0-ictce-7.3.5.eb
   - netCDF-4.2-goolf-1.4.10.eb
   - netCDF-4.2-ictce-5.3.0.eb
   - netCDF-C++-4.2-goolf-1.4.10.eb
@@ -63,21 +63,30 @@ core:
   - numpy-1.7.1-goolf-1.4.10-Python-2.7.3.eb
   - OpenFOAM-2.3.0-goolf-1.4.10.eb
   - OpenFOAM-2.3.0-ictce-5.3.0.eb
+  - OpenMPI-1.8.4-GCC-4.9.2.eb
   - Perl-5.16.3-goolf-1.4.10.eb # Perl problem comes from the shebang being too long. This problem should disappear at release since the rootinstall will be way closer to the root, we will be well below the 127 characters limit.
   - Perl-5.16.3-goolf-1.4.10-bare.eb
   - Perl-5.16.3-ictce-5.3.0.eb # Perl problem comes from the shebang being too long. This problem should disappear at release since the rootinstall will be way closer to the root, we will be well below the 127 characters limit.
   - Perl-5.16.3-ictce-5.3.0-bare.eb
+  - PyQt-4.11.3-ictce-7.3.5-Python-2.7.10.eb
   - Python-2.7.6-goolf-1.4.10.eb
   - Python-2.7.5-ictce-5.3.0.eb
+  - Python-2.7.10-ictce-7.3.5.eb
+  - Python-2.7.10-ictce-7.3.5-bare.eb
   - Python-3.3.2-goolf-1.4.10.eb # Not available anymore due to extension not available anymore at this version (nose)
   - Python-3.3.2-ictce-5.3.0.eb # Not available anymore due to extension not available anymore at this version (nose)
+  - Python-3.4.3-ictce-7.3.5.eb
+  - Python-3.4.3-ictce-7.3.5-bare.eb
   - QuantumESPRESSO-5.0.2-goolf-1.4.10.eb
   - QuantumESPRESSO-5.0.2-goolf-1.4.10-hybrid.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0.eb
   - QuantumESPRESSO-5.0.2-ictce-5.3.0-hybrid.eb
+  - QuantumESPRESSO-5.1.2-ictce-7.3.5.eb
   - R-3.0.2-goolf-1.4.10.eb # Download Java sources separately (normal behavior in EasyBuild) + Easyconfig changes: (Rniftilib: ext_options->rforge_options 0.0-32->0.0-35) (Rsamtools: 1.14.1->1.14.3) (pim: 1.1.5.4->1.1.5.6) + IRanges not downloading correctly
   - R-3.0.2-ictce-5.3.0.eb # Download Java sources separately (normal behavior in EasyBuild) + IRanges, Biostrings, GenomicRanges, graph, not downloading correctly
   - R-3.0.2-ictce-5.3.0-bare.eb # Download Java sources separately (normal behavior in EasyBuild)
+  - R-3.2.0-ictce-7.3.5-bare.eb
+  - R-3.2.0-ictce-7.3.5-Rmpi.eb
   - SAMtools-0.1.19-goolf-1.4.10.eb
   - SAMtools-0.1.19-ictce-5.3.0.eb
   - SAMtools-1.2-ictce-5.3.0.eb
@@ -90,6 +99,7 @@ core:
   - MATLAB-2013a.eb # Sources to get manually + Provide license key in the MATLAB2013a_KEY environment variable
   - MATLAB-2013b.eb # Sources to get manually + Provide license key in the MATLAB2013b_KEY environment variable
   - MATLAB-2014a.eb # Sources to get manually + Provide license key in the MATLAB2014a_KEY environment variable
+  - MATLAB-2015a.eb # Sources to get manually + Provide license key in the MATLAB2015a_KEY environment variable
   - TotalView-8.12.0-0-linux-x86-64.eb # sources to get manually
   - ABAQUS-6.11.1.eb # Sources downloaded manually
   - ABAQUS-6.14.2.eb # Sources downloaded manually
@@ -112,5 +122,19 @@ lcsb:
   - EMBOSS-6.6.0-nodep-goolf-1.4.10.eb
   - Cython-0.22-goolf-1.4.10-Python-2.7.3.eb
   - Circos-0.64-ictce-5.5.0-Perl-5.18.2.eb
+  - MUSCLE-3.8.31-goolf-1.4.10.eb
+  - bam2fastq-1.1.0-goolf-1.4.10.eb
+  - parallel-20130122-goolf-1.4.10.eb
+  - BLAST-2.2.26-Linux_x86_64.eb
+  - BLAST+-2.2.28-goolf-1.4.10.eb
+  - BLAST+-2.2.28-goolf-1.4.10-Python-2.7.3.eb
+  - pandas-0.16.0-goolf-1.4.10-Python-3.3.2.eb
+  - Trinity-2.0.6-goolf-1.4.10.eb
+  - PLINK-1.07-ictce-7.3.5.eb
+  - PLINK-1.90-beta3r-Linux_x86_64.eb
+  - SNPTEST-v2.5.1_Linux_x86_64_static.eb
+  - HMMER-3.1b2-ictce-7.3.5.eb
+  - FASTX-Toolkit-0.0.14-goolf-1.4.10.eb
+  - Trimmomatic-0.33-Java-1.7.0_21.eb
 
 # To create a "all" software set, use this command: "find -name "*.eb" -exec basename {} \; | sed "s/^/  - /g" > swsets.yaml"
