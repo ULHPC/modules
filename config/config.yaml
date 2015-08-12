@@ -4,6 +4,6 @@ mns : ThematicMNS
 buildmode : local
 apps_root : $HOME/.local/resif 
 release : HEAD
-git_ebblocks: https://github.com/ULHPC/easybuild-easyblocks|uni.lu-v2.2.0
-git_ebconfigs: https://github.com/ULHPC/easybuild-easyconfigs|uni.lu-v2.2.0
-git_ebframework: https://github.com/ULHPC/easybuild-framework|uni.lu-v2.2.0
+git_ebblocks: https://github.com/ULHPC/easybuild-easyblocks|resif-v1.4.0
+git_ebconfigs: https://github.com/ULHPC/easybuild-easyconfigs|resif-v1.4.0
+git_ebframework: https://github.com/ULHPC/easybuild-framework|resif-v1.4.0
