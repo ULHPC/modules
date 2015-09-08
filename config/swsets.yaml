@@ -111,6 +111,7 @@ ulhpc:
   - Boost-1.55.0.eb
   - CMake-3.0.0-GCC-4.8.3.eb
   - CUDA-5.5.22-GCC-4.8.2.eb
+  - libxslt-1.1.28-ictce-7.3.5.eb
 lcsb:
   - BEDTools-2.23.0-goolf-1.4.10.eb
   - BWA-0.7.12-goolf-1.4.10.eb
