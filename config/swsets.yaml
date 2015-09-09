@@ -138,4 +138,5 @@ lcsb:
   - FASTX-Toolkit-0.0.14-goolf-1.4.10.eb
   - Trimmomatic-0.33-Java-1.7.0_21.eb
   - Biopython-1.65-ictce-7.3.5-Python-3.4.3
+  - BCFtools-1.2-ictce-7.3.5.eb
 # To create a "all" software set, use this command: "find -name "*.eb" -exec basename {} \; | sed "s/^/  - /g" > swsets.yaml"
