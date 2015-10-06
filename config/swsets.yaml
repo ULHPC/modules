@@ -104,6 +104,8 @@ core:
   - ABAQUS-6.11.1.eb # Sources downloaded manually
   - ABAQUS-6.14.2.eb # Sources downloaded manually
   # Not ANYMORE AGAIN. Doesn't make any sense - matplotlib-1.3.0-ictce-5.3.0-Python-2.7.5.eb # Works AGAIN (at least when built at the END of the process. Will try to build it there again and see if the problem occurs one again (A missing module dependency ?))
+  - Perl-5.22.0-ictce-7.3.5-bare.eb
+  - GSL-1.16-ictce-7.3.5.eb
 ulhpc:
   - Autoconf-2.69-gcccuda-2.6.10.eb
   - Automake-1.14-gcccuda-2.6.10.eb
